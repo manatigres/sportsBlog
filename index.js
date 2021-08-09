@@ -1,5 +1,10 @@
-const { MongoClient } = require('mongodb');
 const express = require('express')
+const path = require('path')
+const PORT = process.env.PORT || 5000
+
+
+
+const { MongoClient } = require('mongodb');
 const bp = require('body-parser')
 const app = express()
 const API_PORT = process.env.PORT || 22650;
@@ -9,7 +14,6 @@ const limit = 15;
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
 
-app.use(express.static('content'));
 
 async function main() {
     const uri = "mongodb+srv://kds4:Mongo123@cluster0.oficb.mongodb.net/Sample?retryWrites=true&w=majority";
@@ -41,7 +45,12 @@ async function main() {
 
     try {
 
-        app.listen(API_PORT, () => console.log(`Listening on localhost: ${API_PORT}`))
+        app
+        .use(express.static(path.join(__dirname, 'public')))
+        .set('views', path.join(__dirname, 'views'))
+        .set('view engine', 'ejs')
+        .get('/', (req, res) => res.render('pages/index'))
+        .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
     } catch(e){
 
