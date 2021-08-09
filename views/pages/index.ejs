@@ -1,66 +1,226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <%- include ("../partials/header.ejs") %>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+
 </head>
 
 <body>
 
-  <%- include ("../partials/nav.ejs") %>
 
-<div class="jumbotron text-center">
-  <div class="container">
-    <a href="/" class="lang-logo">
-      <img src="/lang-logo.png">
-    </a>
-    <h1>Getting Started cccccccccon Heroku wisdfsadfsdfsfasddfth Node.js</h1>
-    <p>This is a sample Node application deployed to Heroku. It's a reasonably simple app - but a good foundation for understanding how to get the most out of the Heroku platform.</p>
-    <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-nodejs"><span class="glyphicon glyphicon-flash"></span> Getting Started on Heroku with Node.js</a>
-    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/node-js-getting-started"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
-  </div>
-</div>
-<div class="container">
-  <div class="alert alert-info text-center" role="alert">
-    To deploy your own copy, and learn the fundamentals of the Heroku platform, head over to the <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs" class="alert-link">Getting Started on Heroku with Node.js</a> tutorial.
-  </div>
-  <hr>
-  <div class="row">
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-info-sign"></span> How this sample app works</h3>
-      <ul>
-        <li>This app was deployed to Heroku, either using Git or by using <a href="https://github.com/heroku/node-js-getting-started">Heroku Button</a> on the repository.</li>
+    <div class="tabs">
+        <ul class="tabLinks">
+          <li>
+            <button class="singleLink">
+              <span class="linkText" data-text="#1 Tab">Browse</span>
+            </button>
+          </li>
+          <li>
+            <button class="singleLink">
+              <span class="linkText" data-text="#2 Tab">Edit</span>
+            </button>
+          </li>
 
-        <li>When Heroku received the source code, it fetched all the dependencies in the <a href="https://github.com/heroku/node-js-getting-started/blob/main/package.json">package.json</a>, creating a deployable slug.</li>
-        <li>The platform then spins up a dyno, a lightweight container that provides an isolated environment in which the slug can be mounted and executed.</li>
-        <li>You can scale your app, manage it, and deploy over <a href="https://addons.heroku.com/">150 add-on services</a>, from the Dashboard or CLI.</li>
-      </ul>
-    </div>
-    <div class="col-md-6">
-      <h3><span class="glyphicon glyphicon-link"></span> Next Steps</h3>
-      <ul>
-        <li>If you are following the <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs">Getting Started</a> guide, then please head back to the tutorial and follow the next steps!</li>
-        <li>If you deployed this app by deploying the Heroku Button, then in a command line shell, run:</li>
-        <ul>
-          <li><code>git clone https://github.com/heroku/node-js-getting-started.git</code> - this will create a local copy of the source code for the app</li>
-          <li><code>cd node-js-getting-started</code> - change directory into the local source code repository</li>
-          <li><code>heroku git:remote -a &lt;your-app-name></code> - associate the Heroku app with the repository</li>
-          <li>You'll now be set up to run the app locally, or <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs#push-local-changes">deploy changes</a> to Heroku</li>
         </ul>
-      </ul>
-      <h3><span class="glyphicon glyphicon-link"></span> Helpful Links</h3>
-      <ul>
-        <li><a href="https://www.heroku.com/home">Heroku</a></li>
-        <li><a href="https://devcenter.heroku.com/">Heroku Dev Center</a></li>
-        <li><a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs">Getting Started on Heroku with Node.js</a></li>
-        <li><a href="https://devcenter.heroku.com/articles/deploying-nodejs">Deploying Node Apps on Heroku</a></li>
-      </ul>
+        <ul class="TabContents">
+          <li>
+
+            <div class="insideContent">
+                <label for="search">Add filter:</label>
+                <select name="filter" id="filter_menu" >
+                    <option value="forname" >Forname</option>
+                    <option value="surname" >Surname</option>
+                    <option value="sex" >Sex</option>
+                    <option value="dataset" >Dataset</option>
+                    <option value="father_forname" >Father's forname</option>
+                    <option value="father_surname" >Father's surname</option>
+                    <option value="mother_forname" >Mother's forname</option>
+                    <option value="mother_surname" >Mother's surname</option>
+                    <option value="address" >Address</option>
+                    <option value="occupation" >Occupation</option>
+                    <option value="f_occupation" >Father's occupation</option>
+                    <option value="m_occupation" >Mother's occupation</option>
+                    <option value="death" >Date of death</option>
+                    <option value="marriage" >Place of marriage</option>
+                    <option value="p_marriage" >Place of parent's marriage</option>
+
+                </select>
+            
+                <span id="input">
+                    <input type="text" id="search" name="search" >
+                </span>
+                <button id="search_button">&#x1F50D</button><br>
+
+                <div> 
+                    <label for="limit">Limit:</label>
+                    <select name="limit" id="limit" >
+                        <option value=15 >15</option>
+                        <option value=30 >30</option>
+                        <option value=50 >50</option>
+                    </select>
+                </div><br>
+
+
+                <div id="count" style="color: red;"></div>
+                <div id="selected_filters_div">
+                </div>
+                <div style="display:none;" id="loader"></div>
+                <svg id="svg" width="100%" height="600">
+                       
+                    <g id="g"></g>
+                </svg>
+            </div>
+          </li>
+          <li>
+
+            <div class="insideContent">
+                <div id="filter_div">
+                    <label for="list_menu">Choose a list:</label>
+                    <select name="list_menu" id="list_menu" >
+                        <option id="default_option_list" selected="true" disabled="disabled">Select a list</option>
+                    </select><br>
+                </div>
+
+                <svg id="svg2" width="100%" height="600"></svg>
+            </div>
+            
+            <li>
+        </ul>
+      </div>
+
+
+    
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="tite_div">
+                <h3 id="title">Titulo</h3>
+            </div>
+            <hr>
+
+            <div class="tab">
+                <button class="tablinks1" id="properties_button" >Properties</button>
+                <button class="tablinks1" id="relationships_button">Relationships</button>
+                <button class="tablinks1" id="notes_button">Notes</button>
+              </div>
+              <hr>
+
+
+            <div id="table_div" >
+                <table id="table"></table>
+                <div id="notes" style="display: none;">
+                    <ul id="notes_ul"></ul>
+                </div>
+            </div>
+
+            <div id="rel_div" >
+
+            </div>
+
+
+            <hr>
+
+
+            <div id="view_container">
+            <div id="borrar">
+                <button id="listButton"  >Add to list</button>
+                <button id="createList" >Create list</button>
+            </div>
+
+            <div id="create_list_div" style="display: none;">
+                <label style="padding-right: 5px;">List name:</label>
+                <input type="text" id="name"  >
+                <button id="add" style="margin-left: 30px;">Add</button>
+                <h6 id="list_message"></h6>
+            </div>
+            <div id="dataset_view" style="display: none;">
+                <label style="padding-right: 5px;">Select list:</label>
+                <select name="list" id="list_name" >
+                    <option id="default_option" selected="true" disabled="disabled">Select a list</option>
+                </select>
+                <button id="add_list" style="margin-left: 30px;">Add</button>
+                <h6 id="list__name_message"></h6>
+
+                <div id="myDropdown" class="dropdown-content">
+                </div>
+            </div>
+
+            </div>
+
+           <div id="lab_container">
+            <div id="list_view">
+                <div>
+                    <button  id="remove"  >Remove from the list</button>
+                    <button   id="create_rel" >Create a relationship</button>
+                    <button  id="remove_rel" >Remove a relationship</button>
+                    <button  id="merge_button" >Merge</button> 
+                </div>
+            </div>
+
+
+                <br>
+                <div id="create_relDiv" style="display: none;" >
+                    <label for="person">Choose a person from this list:</label>
+                    <select name="person" id="person" >
+                        <option id="default_option" selected="true" disabled="disabled">Select a person</option>
+                    </select><br>
+                    <label for="relationship">Choose a relationship:</label>
+                    <select name="relationship" id="relationship" >
+                        <option selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
+                        <option value="mother" >Mother</option>
+                        <option value="father" >Father</option>
+                        <option value="spouse" >Spouse</option>
+                        <option value="children" >Child</option>
+                    </select><br>
+                    <button id="add_relationship">Add relationship</button>
+                </div>
+
+                <div id="remove_relDiv" style="display: none;">
+                    <label for="relationship">Choose a relationship:</label>
+                    <select name="relationship" id="relationship_remove" >
+                        <option id="select_rel_remove" selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
+                        <option value="mother" >Mother</option>
+                        <option value="father" >Father</option>
+                        <option value="spouse" >Spouse</option>
+                        <option value="children" >Child</option>
+                    </select><br>
+                    <label for="person">Choose a person from this list:</label>
+                    <select name="person" id="person_remove" >
+                        <option id="default_option_remove" selected="true" disabled="disabled">Select a person</option>
+                    </select><br>
+                    <button id="remove_relationship">Remove relationship</button>
+                    
+                </div>
+
+                <div id="merge_Div" style="display: none;">
+                    <label for="merge_list">Choose a person:</label>
+                    <select name="merge_list" id="merge_select" >
+                        <option id="select_merge" selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
+                    </select><br>
+                    <button id="merge">Merge</button>
+                    
+                </div>
+
+
+                
+            </div>
+            <div id="notes_text" style="display: none;">
+                <label for="merge_list">Write a note:</label>
+                <textarea name="" id="text_box" cols="55" rows="5   "></textarea>
+                <button id="add_note" >Add note</button>
+            </div>
+        </div>
+
     </div>
-  </div> <!-- row -->
-   <div class="alert alert-info text-center" role="alert">
-    Please do work through the Getting Started guide, even if you do know how to build such an application.  The guide covers the basics of working with Heroku, and will familiarize you with all the concepts you need in order to build and deploy your own apps.
-  </div>
-</div>
-
-
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="./client.js"></script>
 </body>
 </html>

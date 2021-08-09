@@ -1,27 +1,614 @@
-.jumbotron {
-  background: #532F8C;
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+stroke-width: 2.5px;
+}
+
+label {
+  pointer-events: none;
+  font: 10px sans-serif;
+  text-transform: uppercase;
+}
+
+body {font-family: Arial, Helvetica, sans-serif;}
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 80px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #F8F8F8;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 35%;
+  position: relative;
+  height: 550px;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropbtn {
+  background-color: #3498DB;
   color: white;
-  padding-bottom: 80px; }
-  .jumbotron .btn-primary {
-    background: #845ac7;
-    border-color: #845ac7; }
-    .jumbotron .btn-primary:hover {
-      background: #7646c1; }
-  .jumbotron p {
-    color: #d9ccee;
-    max-width: 75%;
-    margin: 1em auto 2em; }
-  .navbar + .jumbotron {
-    margin-top: -20px; }
-  .jumbotron .lang-logo {
-    display: block;
-    background: #B01302;
-    border-radius: 50%;
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    border: 2px solid white; }
-    .jumbotron .lang-logo img {
-      max-width: 100%; }
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #2980B9;
+}
+
+.dropdown {
+  min-height: 200px;
+}
+
+.dropdown-content {
+  display: none;
+  
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+.tooltip {   
+
+  font: 20px sans-serif;   
+  font-weight: bold;             
+}
+
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  table-layout: fixed;
+  line-height: 20px;
+
+
+}
+
+.input_cell{
+  height: 10px;
+  font-size: 12px;
+}
+
+.table_titles{
+width: 200px;
+padding-right: 10px;
+}
+
+
+#table_div{
+  width: 80%;
+  height: 170px;
+  overflow: scroll;
+  padding: 25px;
+  margin: auto;
+  overflow-y:auto;
+  overflow-x: auto;
+}
+
+td, th {
+  text-align: left;
+  font-size: 12px;
+  padding: 2px;
+  width: 250px;
+  min-height: 20px;
+}
+
+
+
+
+
+/* Code By Webdevtrick ( https://webdevtrick.com ) */
+@import url("https://fonts.googleapis.com/css?family=Lato:400,300");
+
+
+.tabs {
+--links-height: 80px;
+--links-background: linear-gradient(135deg, #e5eaf1 0%, #b9c5d8 100%);
+--links-overlay: linear-gradient(135deg, #FF512F 0%,#EB3349 48%,#F45C43 100%);
+--Sllink-background: linear-gradient(90deg,transparent 70%,rgba(255, 255, 255, 0.2) 100%);
+width: 100%;
+
+font-family: Lato, sans-serif;
+}
+.tabs .tabLinks {
+margin: 0;
+padding: 0;
+display: flex;
+justify-content: space-between;
+align-items: center;
+height: var(--links-height);
+background: var(--links-background);
+list-style-type: none;
+}
+
+.tabs .tabLinks li {
+flex: 1;
+}
+.tabs .tabLinks li .singleLink {
+all: unset;
+position: relative;
+height: var(--links-height);
+width: 100%;
+background: var(--Sllink-background);
+cursor: pointer;
+overflow: hidden;
+transition: 0.3s;
+}
+
+.tabs .tabLinks li .singleLink::before {
+position: absolute;
+content: "";
+top: 0;
+left: 0;
+z-index: 2;
+width: 100%;
+height: 100%;
+background: var(--links-overlay);
+-webkit-transform: scaleY(0);
+        transform: scaleY(0);
+-webkit-transform-origin: top;
+        transform-origin: top;
+transition: 0.3s ease-in-out;
+}
+.tabs .tabLinks li .singleLink .linkText {
+position: relative;
+z-index: 2;
+display: flex;
+justify-content: center;
+align-items: center;
+opacity: 0.6;
+transition: 0.5s;
+}
+.tabs .tabLinks li .singleLink .linkText::before {
+position: absolute;
+content: attr(data-text);
+top: 160%;
+z-index: -1;
+font-size: 40px;
+font-weight: 600;
+color: white;
+opacity: 0.1;
+transition: 1.2s ease-out;
+}
+
+
+.tabs .tabLinks li .singleLink:hover::before {
+-webkit-transform: scaleY(1);
+        transform: scaleY(1);
+}
+.tabs .tabLinks li .singleLink:hover .linkText {
+color: white;
+opacity: 1;
+}
+.tabs .tabLinks li .singleLink:hover .linkText::before {
+-webkit-transform: translateY(-300%);
+        transform: translateY(-300%);
+}
+.tabs .tabLinks li .singleLink.active {
+-webkit-transform: scaleY(1.4);
+        transform: scaleY(1.4);
+background: white;
+}
+.tabs .tabLinks li .singleLink.active::before {
+-webkit-transform: scaleY(0.05);
+        transform: scaleY(0.05);
+}
+.tabs .tabLinks li .singleLink.active .linkText {
+-webkit-transform: scaleY(0.714);
+        transform: scaleY(0.714);
+}
+.tabs .tabLinks li .singleLink.active .linkText, .tabs .tabLinks li .singleLink.active:hover .linkText {
+background: var(--links-overlay);
+-webkit-background-clip: text;
+        background-clip: text;
+color: transparent;
+opacity: 1;
+}
+.tabs .TabContents {
+position: relative;
+margin-top: 0;
+padding: 40px 60px;
+background: white;
+list-style-type: none;
+transition: 1s;
+}
+.tabs .TabContents::after {
+position: absolute;
+content: "";
+left: 0;
+bottom: 0;
+width: 100%;
+height: 5px;
+background: var(--links-overlay);
+}
+.tabs .TabContents .insideContent {
+display: none;
+min-height: 200px;
+font-weight: 300;
+line-height: 1.8;
+opacity: 0;
+-webkit-transform: translateY(30%);
+        transform: translateY(30%);
+-webkit-animation: fadeIn 0.6s forwards;
+        animation: fadeIn 0.6s forwards;
+}
+.tabs .TabContents .insideContent.active {
+display: block;
+}
+
+@-webkit-keyframes fadeIn {
+to {
+  opacity: 1;
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+}
+
+@keyframes fadeIn {
+to {
+  opacity: 1;
+  -webkit-transform: translateY(0);
+          transform: translateY(0);
+}
+}
+
+
+#loader {
+position: absolute;
+left: 50%;
+top: 50%;
+z-index: 1;
+width: 120px;
+height: 120px;
+margin: -76px 0 0 -76px;
+border: 16px solid #f3f3f3;
+border-radius: 50%;
+border-top: 16px solid #3498db;
+-webkit-animation: spin 2s linear infinite;
+animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+0% { -webkit-transform: rotate(0deg); }
+100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+position: relative;
+-webkit-animation-name: animatebottom;
+-webkit-animation-duration: 1s;
+animation-name: animatebottom;
+animation-duration: 1s
+}
+
+@-webkit-keyframes animatebottom {
+from { bottom:-100px; opacity:0 } 
+to { bottom:0px; opacity:1 }
+}
+
+@keyframes animatebottom { 
+from{ bottom:-100px; opacity:0 } 
+to{ bottom:0; opacity:1 }
+}
+
+#myDiv {
+display: none;
+text-align: center;
+}
+
+hr {
+width: 90%;
+border: 0;
+height: 0;
+border-top: 1px solid rgba(0, 0, 0, 0.1);
+border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Style the tab */
+.tab {
+overflow: hidden;
+background-color: #F8F8F8;
+margin: auto;
+width: 50%;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+background-color: inherit;
+border: none;
+margin: auto;
+border-bottom:  1px solid rgba(255, 255, 255, 0.3);
+outline: none;
+cursor: pointer;
+padding: 14px 16px;
+transition: 0.3s;
+font-size: 14px;
+width: 100%;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+background-color: #ddd;
+}
+
+.edit {
+display: none;
+float: right;
+background-color: Transparent;
+float: right;
+border: none;
+cursor:pointer;
+}
+
+.save{
+outline:none;
+background-color: Transparent;
+float: right;
+border: none;
+cursor:pointer;
+}
+
+.edithidden{
+display: none;
+}
+
+
+
+
+.cell:hover .edit{ 
+display:inline;
+}
+
+
+#borrar{
+margin: 10px 100px;
+padding-top: 10px;
+display: flex;
+justify-content: space-evenly;
+}
+
+
+#title {
+text-align: center;
+}
+
+#space{
+height: 100px;
+}
+
+#create_list_div{
+height: 80px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+
+#dataset_view{
+height: 80px;
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+}
+
+#create_relDiv{
+margin-top: 15px;
+height: 80px;
+display: flex;
+flex-direction: column;
+flex-grow: 0;
+flex-basis: 25em;
+position: relative;
+}
+
+h6 {
+position:absolute;
+display: inline;
+left: 180px;
+bottom: -9px;
+}
+
+#list_name{
+width: 150px;
+}
+
+#notes_text{
+position: relative;
+height: 100px;
+width: 500px;
+}
+
+#notes_text label { 
+position: absolute;
+left: 17%;
+top: 20%;
+transform: translate(-50%, -50%);
+}
+
+#text_box{
+position: absolute;
+left: 50%;
+top: 80%;
+transform: translate(-50%, -50%);
+resize: none;
+}
+
+#notes {
+position: absolute;
+margin: 0;
+left: 70px;
+right: 70px;
+font-size: 12px;
+max-height: 180px;
+overflow-y: auto;
+}
+
+#notes_ul{
+padding-left: 20px;
+list-style-type: circle;
+}
+
+#notes_ul li {
+padding-right: 20px;
+padding-bottom: 10px;
+}
+
+.rel_div{
+background-color: white;
+width: 60%;
+height:80px;
+border: 2px solid black;
+position: relative;
+
+}
+
+.rel_span{
+position: absolute;
+left: 60%;
+top: 50%;
+transform: translate(-50%, -50%);
+font-size: 14px;
+}
+
+.tag{
+position: absolute;
+left: 20%;
+top: 50%;
+transform: translate(-50%, -50%);
+font-size: 12px;
+font-weight: bold;
+}
+
+
+
+#add_note{
+position: absolute;
+left: 50%;
+top: 150%;
+transform: translate(-50%, -50%);
+}
+
+#filter_div{
+padding: 20px;
+}
+
+#selected_filters_div{
+padding: 20px 0 ;
+}
+
+
+
+.filter_buttons{
+margin: 7px;
+}
+
+#rel_div{
+position: relative;
+
+height: 400px;
+width: auto;
+
+}
+
+#remove_relDiv{
+margin-top: 15px;
+height: 80px;
+display: flex;
+flex-direction: column;
+flex-grow: 0;
+flex-basis: 25em;
+position: relative;
+}
+
+#merge_Div{
+margin-top: 15px;
+height: 80px;
+display: flex;
+flex-direction: column;
+flex-grow: 0;
+flex-basis: 25em;
+position: relative;
+}
+
+#remove_relationship{
+position: absolute;
+left: 50%;
+top: 140%;
+transform: translate(-50%, -50%);
+}
+#add_relationship{
+position: absolute;
+left: 50%;
+top: 140%;
+transform: translate(-50%, -50%);
+}
+
+#merge{
+position: absolute;
+left: 50%;
+top: 90%;
+transform: translate(-50%, -50%);
+}
+
+
+
 
