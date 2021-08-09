@@ -1,6 +1,6 @@
 (function(){
 
-  const { spawn } = require('child_process');
+ /* const { spawn } = require('child_process');
   const got = require('got');
   const test = require('tape');
   
@@ -30,7 +30,7 @@
   });
   
 
-
+*/
   var svg = d3.select("#svg");
   var svg2 = d3.select("#svg2");
   var width = svg.attr("width");
