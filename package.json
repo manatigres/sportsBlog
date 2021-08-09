@@ -91,6 +91,7 @@
     "mimic-response": "^1.0.1",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.5",
+    "mongodb": "^4.1.0",
     "ms": "^2.0.0",
     "negotiator": "^0.6.2",
     "normalize-url": "^6.1.0",
@@ -138,7 +139,6 @@
     "which-boxed-primitive": "^1.0.2",
     "wrappy": "^1.0.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
