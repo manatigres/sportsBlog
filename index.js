@@ -34,7 +34,7 @@ async function main() {
         //list = client2.db("List").collection("BORRAR");
         combined = client.db("Sample").collection("combined_collections");
         absorbed = client.db("Sample").collection("absorbed");
-
+        activity = client.db("Sample").collection("activity");
  
         //await findOneListingByName(client, "Lovdely Loft");
 
@@ -72,6 +72,14 @@ app.get('/database', function(req,res) {
         .catch(err => {
             res.status(400).send("Could not get group information", err.message);
         })
+});
+
+app.get('/get/activity', async function(req,res) {
+  const activity_array = await activity.findOne({id: "activity"})
+
+  res.status(200).json(activity_array.activity);
+
+
 });
 
 app.get('/getNotes/:person', async function(req,res) {
@@ -750,6 +758,23 @@ app.post('/list/:list', async function (req, res) {
           
         })
 
+        app.post('/activity', async function (req, res) {
+          let phrase= req.body;    
+
+          
+         //await activity.insertOne({id: "activity", activity: []})
+
+         let activity_array = await activity.findOne({id: "activity"})
+         activity_array.activity.push(phrase.phrase)
+
+          await activity.findOneAndUpdate(
+            { id: "activity"},
+            {$set: {  activity: activity_array.activity}},
+            {upsert: true}
+        )
+        //res.status(200).send(`List deleted`);
+          
+        })
 
         app.post('/addNote/:person', async function (req, res) {
             let id = req.params.person;

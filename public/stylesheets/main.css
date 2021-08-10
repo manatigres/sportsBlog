@@ -731,3 +731,12 @@ transform: translate(-50%, -50%);
     color: black;
     
   }
+
+  #activity_content{
+    width: 60%;
+    border: 1px solid black;
+    margin: auto;
+    background-color: hsla(241, 59%, 70%, 0.137);
+    overflow-y: auto;
+    min-height: 400px;
+  }

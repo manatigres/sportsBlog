@@ -57,6 +57,10 @@ function center() {
 initZoom()
 
 
+  function getTime(){
+    return new Date().toLocaleString()
+  }
+
   function createLegends(){
     svg.append("text").attr("x", 565).attr("y", -240).text("Dataset").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
     svg.append("circle").attr("cx",570).attr("cy",-210).attr("r", 10).style("fill", "#C64756")
@@ -302,6 +306,9 @@ initZoom()
       })
       .then(res => res.text())
       .then(data => {
+        
+        let phrase = `User deleted the list ${current_list}`
+        updateRecord(phrase)
         alert(data)
         loadLists()
         })
@@ -324,6 +331,9 @@ initZoom()
       .then(res => res.text())
       .then(data => {
         //alert(data)
+        let time = getTime()
+        let phrase = `[${time}]   User added a new note to person: ${d["Forname"]} ${d["Surname"]} (${d["ID"]})`
+        updateRecord(phrase)
         showNotes(d)
         })
 
@@ -856,6 +866,7 @@ initZoom()
 
 
   function getBirthDatabase(data){
+    console.log("sdsad")
     console.log(data)
     let value = document.getElementById("limit").value
       if(data){
@@ -896,6 +907,9 @@ initZoom()
         .then(res => res.text())
         .then(data => {
           alert(data)
+          let time = getTime()
+          let phrase = `[${time}]   User deleted: ${person["Forname"]} ${person["Surname"]} (${person["ID"]}) from list: ${current_list}`
+          updateRecord(phrase)
           updateFilter()
           modal.style.display = "none";
         })
@@ -1605,6 +1619,9 @@ function dragended(d) {
             document.getElementById("list_message").innerHTML = "A list with the same already exists"
           } else{
             alert(data)
+            let time = getTime()
+            let phrase = `[${time}]   User created a new list with the name of ${value}`
+            updateRecord(phrase)
             document.getElementById("list_message").innerHTML = data
             loadLists()
           }
@@ -1653,6 +1670,9 @@ function dragended(d) {
         .then(res => res.text())
         .then(data => {
           alert(data)
+          let time = getTime()
+          let phrase = `[${time}]   User added ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) to list: ${collection}`
+          updateRecord(phrase)
           document.getElementById("dataset_view").style.display = "none"
           clicked(d)
         })
@@ -1697,6 +1717,9 @@ function dragended(d) {
       .then(res => res.text())
       .then(data => {
         document.getElementById("create_relDiv").style.display = "none"
+        let time = getTime()
+        let phrase = `[${time}]   User added to ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) the relationship: ${rel} with ${person}`
+        updateRecord(phrase)
         alert(data)
         createFilterViz(current_filter_nodes)
       })
@@ -1747,6 +1770,9 @@ function dragended(d) {
         })
         .then(res => res.text())
         .then(data => {
+          let time = getTime()
+          let phrase = `[${time}]   User removed ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) the relationship of ${rel} with ${person}`
+          updateRecord(phrase)
           alert(data)
           updateFilter()
         })
@@ -1775,6 +1801,9 @@ function dragended(d) {
       })
       .then(res => res.text())
       .then(data => {
+        let time = getTime()
+        let phrase = `[${time}]   User merged ${d["Forname"]} ${d["Surname"]} (${d["ID"]})  with ${person}`
+        updateRecord(phrase)
         alert(data)
         updateFilter()
         modal.style.display = "none";
@@ -1817,10 +1846,54 @@ function dragended(d) {
       document.getElementById("selected_filters_div").append(new_filter_button)
 
       filter[filter_search] = search_value
+
+      let phrase_list = [] 
+      let time = getTime()
+
+      let phrase = `[${time}]    User searched for:`
+      for(let queary in filter){
+        if(filter[queary] !== false){
+          phrase_list.push({[`${queary}`] : filter[queary] })
+        }
+      }
+
+      for(let i = 0; i < phrase_list.length; i++){
+        console.log(Object.keys(phrase_list[i]))
+         phrase = phrase + ` ${Object.keys(phrase_list[i])}: ${Object.values(phrase_list[i])},`
+      }
+
+      updateRecord(phrase)
       getBirthDatabase(filter) 
     } 
   }
 
+  function updateRecord(phrase){
+
+    fetch(`/activity`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({phrase: phrase})
+    })
+    .then(res => res.text())
+    .then(data => {
+    })
+  }
+
+  function loadActivity(){
+    fetch(`/get/activity`)
+    .then (res => res.json())
+    .then (jsn => {
+      document.getElementById("activity_content").innerHTML = ""
+      for(let activity of jsn){
+        let x = document.createElement("DIV")
+        x.innerHTML = activity
+        document.getElementById("activity_content").append(x)
+
+
+      }
+
+    })
+  }
 
   // Code By Webdevtrick ( https://webdevtrick.com )
   var tabLinks = document.querySelectorAll(".singleLink");
@@ -1836,6 +1909,8 @@ function dragended(d) {
             view = "list_info"
             getFilterLists()
             document.getElementById("delete_list").onclick = () => removeList()
+          } else if(tabLink.id == "button_2"){
+            loadActivity()
           }
 
           tabLinks.forEach(function (tabLink) { return tabLink.classList.remove("active"); 
