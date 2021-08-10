@@ -293,6 +293,24 @@ initZoom()
   }
 
 
+  function removeList(){
+
+    if(current_list !== undefined){
+      fetch(`/removeList/${current_list}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert(data)
+        loadLists()
+        })
+    }
+
+
+  }
+
+
   function notes(d){
     let id = d["ID"]
     let value = document.getElementById("text_box").value 
@@ -1306,7 +1324,7 @@ initZoom()
     console.log(data)
     document.getElementById("svg2").innerHTML = ""
     createLegends()
-    view = "list_info"
+    
     let people = []
     ///////////////////////////////////////////////////////////////
 
@@ -1615,7 +1633,7 @@ function dragended(d) {
 
               document.getElementById("add_list").onclick = () => {
                 createListCollection(d,value)
-                //updateFilter()
+                updateFilter()
               }
 
               //list.addEventListener("click", () => createListCollection(d,name));
@@ -1658,6 +1676,7 @@ function dragended(d) {
               option.innerHTML = collection.name
               option.value = collection.name
               document.getElementById("list_menu").append(option)
+
           }
       })
   }
@@ -1816,6 +1835,7 @@ function dragended(d) {
           } else if(tabLink.id == "button_1"){
             view = "list_info"
             getFilterLists()
+            document.getElementById("delete_list").onclick = () => removeList()
           }
 
           tabLinks.forEach(function (tabLink) { return tabLink.classList.remove("active"); 

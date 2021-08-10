@@ -737,6 +737,20 @@ app.post('/list/:list', async function (req, res) {
         })
 
 
+        app.post('/removeList/:list', async function (req, res) {
+          let list = req.params.list;    
+          
+
+        await list_names.deleteOne( { name: list } )
+
+        await client2.db("List").collection(list).drop()
+          
+        res.status(200).send(`List deleted`);
+          
+          
+        })
+
+
         app.post('/addNote/:person', async function (req, res) {
             let id = req.params.person;
             let note = req.body   
@@ -812,3 +826,9 @@ app.post('/list/:list', async function (req, res) {
                 res.status(200).send(`Note added`);
     
                 })
+
+
+
+
+
+

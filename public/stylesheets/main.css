@@ -708,3 +708,26 @@ transform: translate(-50%, -50%);
   #count {
     margin-top: 10px;
   }
+
+  #delete_list {
+    position: absolute;
+    right: 200px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    margin: auto;
+    border-bottom:  1px solid rgba(255, 255, 255, 0.3);
+    outline: none;
+    cursor: pointer;
+    padding: 7px 16px;
+    transition: 0.3s;
+    font-size: 12px;
+  }
+
+
+  
+  #delete_list:hover {
+    background-color: #ddd;
+    color: black;
+    
+  }
