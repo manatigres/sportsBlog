@@ -9,8 +9,8 @@ stroke-width: 2.5px;
 
 label {
   pointer-events: none;
-  font: 10px sans-serif;
-  text-transform: uppercase;
+  font: 14px sans-serif;
+
 }
 
 body {font-family: Arial, Helvetica, sans-serif;}
@@ -22,7 +22,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
-  padding-top: 80px; /* Location of the box */
+  padding-top: 60px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -41,7 +41,7 @@ body {font-family: Arial, Helvetica, sans-serif;}
   border: 1px solid #888;
   width: 35%;
   position: relative;
-  height: 550px;
+  height: 600px;
 }
 
 /* The Close Button */
@@ -305,7 +305,7 @@ to {
 #loader {
 position: absolute;
 left: 50%;
-top: 50%;
+top: 63%;
 z-index: 1;
 width: 120px;
 height: 120px;
@@ -352,6 +352,7 @@ text-align: center;
 }
 
 hr {
+margin-top: 12px;
 width: 90%;
 border: 0;
 height: 0;
@@ -370,6 +371,10 @@ justify-content: center;
 align-items: center;
 }
 
+#list_view_buttons{
+  width: 80%;
+}
+
 /* Style the buttons inside the tab */
 .tab button {
 background-color: inherit;
@@ -384,10 +389,27 @@ font-size: 14px;
 width: 100%;
 }
 
+
+#list_view_buttons button {
+  background-color: inherit;
+  border: none;
+  margin: auto;
+  border-bottom:  1px solid rgba(255, 255, 255, 0.3);
+  outline: none;
+  cursor: pointer;
+  padding: 7px 16px;
+  transition: 0.3s;
+  font-size: 12px;
+  width: 100%;
+  }
+
 /* Change background color of buttons on hover */
 .tab button:hover {
 background-color: #ddd;
 }
+#list_view_buttons button:hover {
+  background-color: #ddd;
+  }
 
 .edit {
 display: none;
@@ -419,7 +441,7 @@ display:inline;
 
 
 #borrar{
-margin: 10px 100px;
+margin: 30px 100px 10px 100px;
 padding-top: 10px;
 display: flex;
 justify-content: space-evenly;
@@ -451,7 +473,6 @@ position: relative;
 }
 
 #create_relDiv{
-margin-top: 15px;
 height: 80px;
 display: flex;
 flex-direction: column;
@@ -551,6 +572,10 @@ transform: translate(-50%, -50%);
 padding: 20px;
 }
 
+#filter_menu{
+  margin-right: 10px;
+}
+
 #selected_filters_div{
 padding: 20px 0 ;
 }
@@ -570,7 +595,6 @@ width: auto;
 }
 
 #remove_relDiv{
-margin-top: 15px;
 height: 80px;
 display: flex;
 flex-direction: column;
@@ -580,7 +604,6 @@ position: relative;
 }
 
 #merge_Div{
-margin-top: 15px;
 height: 80px;
 display: flex;
 flex-direction: column;
@@ -609,6 +632,79 @@ top: 90%;
 transform: translate(-50%, -50%);
 }
 
+#search{
+  width: 20%;
+  padding: 8px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.select{
+  width: 15%;
+  padding: 8px 20px;
+  margin: 8px 0 8px 4px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
 
 
+#search_button {
+  height: 33px;
+  width: 70px;
+  background-color: #F8F8F8;
+  border: 1px solid #ccc;
+}
+
+#search_button:hover {
+
+  background-color: #eeeeee;
+
+}
+
+.modal_label{ 
+  font-size: 11px;
+  padding-bottom: 3px;
+}
+
+#list_view{
+  margin: 20px 0 35px 0;
+}
+
+#lab_container {
+  width: 80%;
+}
+
+#list_view_buttons #remove{
+  background-color: #f44336;
+  color: white;
+}
+
+#list_view_buttons #remove:hover {
+  background-color: #ddd;
+  color: black;
+  }
+
+
+  svg{
+    display: block;
+    margin: auto;
+  }
+
+  #limit {
+    margin-left: 30px;
+  }
+
+  #header {
+    margin-top: 20px;
+    margin-left: 40px;
+  }
+
+  #count {
+    margin-top: 10px;
+  }

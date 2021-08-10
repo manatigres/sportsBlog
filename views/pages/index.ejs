@@ -29,9 +29,15 @@
         <ul class="TabContents">
           <li>
 
+            
+
             <div class="insideContent">
+
+              <div id="header">
+
+                <span id="row1">
                 <label for="search">Add filter:</label>
-                <select name="filter" id="filter_menu" >
+                <select class="select" name="filter" id="filter_menu" >
                     <option value="forname" >Forname</option>
                     <option value="surname" >Surname</option>
                     <option value="sex" >Sex</option>
@@ -53,23 +59,34 @@
                 <span id="input">
                     <input type="text" id="search" name="search" >
                 </span>
-                <button id="search_button">&#x1F50D</button><br>
+                <button id="search_button">&#x1F50D</button>
+                </span>
 
+
+                <span id="row2">
                 <div> 
-                    <label for="limit">Limit:</label>
-                    <select name="limit" id="limit" >
+                    <label id="limit_label" for="limit">Limit:</label>
+                    <select class="select" name="limit" id="limit" >
                         <option value=15 >15</option>
                         <option value=30 >30</option>
                         <option value=50 >50</option>
                     </select>
-                </div><br>
-
-
-                <div id="count" style="color: red;"></div>
-                <div id="selected_filters_div">
                 </div>
+              </span>
+
+    
+                <span id="row3">
+                <div id="count" style="color: #cd5c5c;"></div>
+                </span>
+                
+                <span id="row4">
+                <div id="selected_filters_div"></div>
+                </span>
+
+                </div>
+
                 <div style="display:none;" id="loader"></div>
-                <svg id="svg" width="100%" height="600">
+                <svg id="svg" width="95%" height="600">
                        
                     <g id="g"></g>
                 </svg>
@@ -79,13 +96,13 @@
 
             <div class="insideContent">
                 <div id="filter_div">
-                    <label for="list_menu">Choose a list:</label>
-                    <select name="list_menu" id="list_menu" >
+                    <label  for="list_menu">Choose a list:</label>
+                    <select class="select" name="list_menu" id="list_menu" >
                         <option id="default_option_list" selected="true" disabled="disabled">Select a list</option>
                     </select><br>
                 </div>
 
-                <svg id="svg2" width="100%" height="600"></svg>
+                <svg id="svg2" width="80%" height="600"></svg>
             </div>
             
             <li>
@@ -136,13 +153,13 @@
             </div>
 
             <div id="create_list_div" style="display: none;">
-                <label style="padding-right: 5px;">List name:</label>
+                <label class="modal_label" style="padding-right: 5px;">List name:</label>
                 <input type="text" id="name"  >
                 <button id="add" style="margin-left: 30px;">Add</button>
                 <h6 id="list_message"></h6>
             </div>
             <div id="dataset_view" style="display: none;">
-                <label style="padding-right: 5px;">Select list:</label>
+                <label class="modal_label" style="padding-right: 5px;">Select list:</label>
                 <select name="list" id="list_name" >
                     <option id="default_option" selected="true" disabled="disabled">Select a list</option>
                 </select>
@@ -157,7 +174,7 @@
 
            <div id="lab_container">
             <div id="list_view">
-                <div>
+                <div class="tab" id="list_view_buttons">
                     <button  id="remove"  >Remove from the list</button>
                     <button   id="create_rel" >Create a relationship</button>
                     <button  id="remove_rel" >Remove a relationship</button>
@@ -166,13 +183,13 @@
             </div>
 
 
-                <br>
+
                 <div id="create_relDiv" style="display: none;" >
-                    <label for="person">Choose a person from this list:</label>
+                    <label class="modal_label" for="person">Choose a person from this list:</label>
                     <select name="person" id="person" >
                         <option id="default_option" selected="true" disabled="disabled">Select a person</option>
                     </select><br>
-                    <label for="relationship">Choose a relationship:</label>
+                    <label class="modal_label" for="relationship">Choose a relationship:</label>
                     <select name="relationship" id="relationship" >
                         <option selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
                         <option value="mother" >Mother</option>
@@ -184,7 +201,7 @@
                 </div>
 
                 <div id="remove_relDiv" style="display: none;">
-                    <label for="relationship">Choose a relationship:</label>
+                    <label class="modal_label" for="relationship">Choose a relationship:</label>
                     <select name="relationship" id="relationship_remove" >
                         <option id="select_rel_remove" selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
                         <option value="mother" >Mother</option>
@@ -192,7 +209,7 @@
                         <option value="spouse" >Spouse</option>
                         <option value="children" >Child</option>
                     </select><br>
-                    <label for="person">Choose a person from this list:</label>
+                    <label class="modal_label" for="person">Choose a person from this list:</label>
                     <select name="person" id="person_remove" >
                         <option id="default_option_remove" selected="true" disabled="disabled">Select a person</option>
                     </select><br>
@@ -201,7 +218,7 @@
                 </div>
 
                 <div id="merge_Div" style="display: none;">
-                    <label for="merge_list">Choose a person:</label>
+                    <label class="modal_label" for="merge_list">Choose a person:</label>
                     <select name="merge_list" id="merge_select" >
                         <option id="select_merge" selected="true" disabled="disabled" style="display: none;" >Select a relationship</option>
                     </select><br>
@@ -213,7 +230,7 @@
                 
             </div>
             <div id="notes_text" style="display: none;">
-                <label for="merge_list">Write a note:</label>
+                <label class="modal_label" for="merge_list">Write a note:</label>
                 <textarea name="" id="text_box" cols="55" rows="5   "></textarea>
                 <button id="add_note" >Add note</button>
             </div>
