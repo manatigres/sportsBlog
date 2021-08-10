@@ -245,18 +245,24 @@ async function gatherMorePeople(id){
     return person
 }
 
-app.post('/list/family/:candidate/:collection', function (req, res) {
+app.post('/list/family/:candidate/:collection', async function (req, res) {
     let candidate = req.params.candidate; 
     let collection = req.params.collection
 
-    console.log(candidate)
-    console.log(collection)
+    const person = await client2.db("List").collection(collection).findOne({person_id: candidate})
+    console.log(person)
 
-    client2.db("List").collection(collection).insertOne({person_id: candidate})
-    .then(comment => {
-        console.log("Successfully insert with ID", comment.insertedId);
-        res.status(200).send(`User has been added to this list`);
-    })
+
+    if(person == undefined){
+      client2.db("List").collection(collection).insertOne({person_id: candidate})
+      .then(comment => {
+          console.log("Successfully insert with ID", comment.insertedId);
+          res.status(200).send(`Person has been added to this list`);
+      })
+    } else{
+      res.status(200).send(`Person is already in the list`);
+    }
+
 
 })
 

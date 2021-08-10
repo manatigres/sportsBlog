@@ -805,8 +805,6 @@ initZoom()
     document.getElementById("merge_Div").style.display = "none"
     document.getElementById("remove_relDiv").style.display = "flex"
    // showRelation(person)
-    console.log("lks")
-    console.log(person)
   }
 
   function showMergeDiv(){
@@ -817,6 +815,8 @@ initZoom()
   }
 
   function omitPerson(person){
+    console.log("adfsds")
+    console.log(person)
     omit_id = person.ID
     omit_merge_id = `M_${person.ID}`
     document.getElementById("default_option").selected = "true"
@@ -1583,9 +1583,12 @@ function dragended(d) {
         .then(res => res.text())
         .then(data => {
           if(data == "already exists"){
+            alert("A list with the same already exists")
             document.getElementById("list_message").innerHTML = "A list with the same already exists"
           } else{
+            alert(data)
             document.getElementById("list_message").innerHTML = data
+            loadLists()
           }
         })
       }
@@ -1612,7 +1615,7 @@ function dragended(d) {
 
               document.getElementById("add_list").onclick = () => {
                 createListCollection(d,value)
-                updateFilter()
+                //updateFilter()
               }
 
               //list.addEventListener("click", () => createListCollection(d,name));
@@ -1632,7 +1635,6 @@ function dragended(d) {
         .then(res => res.text())
         .then(data => {
           alert(data)
-          console.log("sdfasdsd")
           document.getElementById("dataset_view").style.display = "none"
           clicked(d)
         })
@@ -1640,7 +1642,9 @@ function dragended(d) {
   }
 
   function loadLists(){
-
+    
+    document.getElementById("list_menu").innerHTML = "<option id='default_option_list' selected='true' disabled='disabled'>Select a list</option>"
+    document.getElementById("list_menu").append(default_option)  
       fetch('/collections')
       .then(res => res.json())
       .then(data => {
@@ -1741,7 +1745,6 @@ function dragended(d) {
     let id = d.ID
     let person = document.getElementById("merge_select").value
     let collection = document.getElementById("list_menu").value
-    console.log(collection)
 
     if(person == "Select a person"){
 
