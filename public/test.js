@@ -1650,7 +1650,7 @@ function dragended(d) {
         })
       }
         
-      //clicked(d)
+      clicked(d)
         
   }
   
@@ -1698,7 +1698,7 @@ function dragended(d) {
           document.getElementById("dataset_view").style.display = "none"
          
         })
-        //clicked(d)
+        clicked(d)
 
   }
 
@@ -1748,7 +1748,7 @@ function dragended(d) {
         updateFilter()
         
       })
-      //clicked(d)
+      clicked(d)
     }    
 
   }
@@ -1803,7 +1803,7 @@ function dragended(d) {
           rerun()
           updateFilter()
         })
-        //clicked(d)
+        clicked(d)
       }
     
     };
@@ -1836,7 +1836,7 @@ function dragended(d) {
         rerun()
         modal.style.display = "none";
       })
-    //clicked(d)
+    clicked(d)
     
     } 
     
