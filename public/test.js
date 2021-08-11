@@ -241,7 +241,7 @@ initZoom()
 
 
   function clicked(d){
-    console.log(d)
+    //console.log(d)
 
     document.getElementById("notes_button").onclick = () => showNotes(d);
     document.getElementById("properties_button").onclick = () => showTable(d);
@@ -526,8 +526,7 @@ initZoom()
         x.appendChild(span)
         span.id = `dataset_1`
         span.innerHTML = d["dataset"]
-      }
-        if(i == 1){
+      }if(i == 1){
           x.appendChild(span)
           span.id = `forname_1`
           edit_button.id = "edit_button_forname_1"
@@ -870,8 +869,6 @@ initZoom()
   }
 
   function omitPerson(person){
-    console.log("adfsds")
-    console.log(person)
     omit_id = person.ID
     omit_merge_id = `M_${person.ID}`
     document.getElementById("default_option").selected = "true"
@@ -893,8 +890,6 @@ initZoom()
 
 
   function getBirthDatabase(data){
-    console.log("sdsad")
-    console.log(data)
     let value = document.getElementById("limit").value
       if(data){
         document.getElementById("loader").style.display = "block";
@@ -966,7 +961,7 @@ initZoom()
       graph.nodes = []
       graph.links = []
 
-
+      console.log(data)
           for(let i = 0; i < data.length; i++){
 
               graph.nodes[i] = data[i]
@@ -1701,8 +1696,9 @@ function dragended(d) {
           let phrase = `[${time}]   User added ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) to list: ${collection}`
           updateRecord(phrase)
           document.getElementById("dataset_view").style.display = "none"
-          clicked(d)
+         
         })
+        //clicked(d)
 
   }
 
@@ -1748,8 +1744,11 @@ function dragended(d) {
         let phrase = `[${time}]   User added to ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) the relationship: ${rel} with ${person}`
         updateRecord(phrase)
         alert(data)
-        createFilterViz(current_filter_nodes)
+        rerun()
+        updateFilter()
+        
       })
+      //clicked(d)
     }    
 
   }
@@ -1801,9 +1800,10 @@ function dragended(d) {
           let phrase = `[${time}]   User removed ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) the relationship of ${rel} with ${person}`
           updateRecord(phrase)
           alert(data)
+          rerun()
           updateFilter()
         })
-        clicked(d)
+        //clicked(d)
       }
     
     };
@@ -1833,15 +1833,19 @@ function dragended(d) {
         updateRecord(phrase)
         alert(data)
         updateFilter()
+        rerun()
         modal.style.display = "none";
       })
-
+    //clicked(d)
     
     } 
     
   }
 
-
+  function rerun(){
+    getBirthDatabase(filter) 
+  
+}
 
   document.getElementById("search_button").onclick = () =>{
     let search_value
@@ -1870,6 +1874,20 @@ function dragended(d) {
         getBirthDatabase(filter) 
       }
 
+      document.getElementById("clear").onclick = () => clear()
+      document.getElementById("rerun").onclick = () => rerun()
+
+      function clear(){
+        for(let x in filter){
+          filter[`${x}`] = false
+          console.log(filter[`${x}`])
+          document.getElementById("selected_filters_div").innerHTML = ""
+          getBirthDatabase() 
+        }
+      }
+
+
+
       document.getElementById("selected_filters_div").append(new_filter_button)
 
       filter[filter_search] = search_value
@@ -1885,7 +1903,6 @@ function dragended(d) {
       }
 
       for(let i = 0; i < phrase_list.length; i++){
-        console.log(Object.keys(phrase_list[i]))
          phrase = phrase + ` ${Object.keys(phrase_list[i])}: ${Object.values(phrase_list[i])},`
       }
 
@@ -1935,7 +1952,10 @@ function dragended(d) {
           } else if(tabLink.id == "button_1"){
             view = "list_info"
             getFilterLists()
-            document.getElementById("delete_list").onclick = () => removeList()
+            document.getElementById("delete_list").onclick = () => {
+              removeList()
+              getFilterLists()
+            }
           } else if(tabLink.id == "button_2"){
             loadActivity()
           }

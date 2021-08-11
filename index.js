@@ -237,9 +237,25 @@ app.get('/database/:value/:forname/:surname/:sex/:dataset/:father_forename/:fath
             }
 
             for(let person of extra_people){
+
                 all_people.push(await gatherMorePeople(person))
             }
 
+
+
+
+
+            for(let i = 0; i < all_people.length; i++){
+              if(all_people[i] == undefined){
+                all_people.splice(i,1)
+              }
+            }
+
+            if(all_people.includes(undefined)){
+              console.log("yess")
+            }
+
+            
             response[0] = all_people
             response[1] = count
             response[2] = main
@@ -251,6 +267,8 @@ app.get('/database/:value/:forname/:surname/:sex/:dataset/:father_forename/:fath
 async function gatherMorePeople(id){
     const person = await combined.findOne({ID: id})
     return person
+
+
 }
 
 app.post('/list/family/:candidate/:collection', async function (req, res) {
@@ -772,7 +790,7 @@ app.post('/list/:list', async function (req, res) {
             {$set: {  activity: activity_array.activity}},
             {upsert: true}
         )
-        //res.status(200).send(`List deleted`);
+        res.status(200).send(`Note added`);
           
         })
 
