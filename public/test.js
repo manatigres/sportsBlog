@@ -276,7 +276,7 @@ initZoom()
       
       
 
-      document.getElementById("title").innerHTML = `${d["Forname"]} ${d["Surname"]}`
+      document.getElementById("title").innerHTML = `${d["Forname"]} ${d["Surname"]} (${d["ID"]})`
       buildTable(d)
      
      
@@ -492,7 +492,7 @@ initZoom()
     table = document.getElementById("table")
     table.innerHTML = ""
 
-    let table_titles = ["Dataset","Forname","Surname","Birthday","Sex","Occupation","Address","Father's name", "Mother's name","Father's occupation", "Mother's occupation", "Place of marriage", "Place of parent's marriage", "Date of death"  ]
+    let table_titles = ["Dataset","Forname","Surname","Birthday","Sex","Occupation","Address","Father's forname", "Father's surname", "Mother's forname","Mother's surname","Father's occupation", "Mother's occupation", "Place of marriage", "Place of parent's marriage", "Date of death"  ]
     
 
 
@@ -595,27 +595,49 @@ initZoom()
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
         } else if(i == 7){
           x.appendChild(span)
-          span.id = `fatherName_1`
-          edit_button.id = "edit_button_fatherName_1"
-          save_button.id = "save_button_fatherName_1"
+          span.id = `fatherFor_1`
+          edit_button.id = "edit_button_fatherFor_1"
+          save_button.id = "save_button_fatherFor_1"
           save_button.style.display = "none"
-          span.innerHTML = `${d["father_forname"]} ${d["father_surname"]}`
+          span.innerHTML = `${d["father_forname"]}`
           x.appendChild(edit_button)
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
         } else if(i == 8){
           x.appendChild(span)
-          span.id = `motherName_1`
-          edit_button.id = "edit_button_motherName_1"
-          save_button.id = "save_button_motherName_1"
+          span.id = `fatherSur_1`
+          edit_button.id = "edit_button_fatherSur_1"
+          save_button.id = "save_button_fatherSur_1"
           save_button.style.display = "none"
-          span.innerHTML = `${d["mother_forname"]} ${d["mother_surname"]}`
+          span.innerHTML = `${d["father_surname"]}`
           x.appendChild(edit_button)
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
         } else if(i == 9){
+          x.appendChild(span)
+          span.id = `motherFor_1`
+          edit_button.id = "edit_button_motherFor_1"
+          save_button.id = "save_button_motherFor_1"
+          save_button.style.display = "none"
+          span.innerHTML = `${d["mother_forname"]}`
+          x.appendChild(edit_button)
+          x.appendChild(save_button)
+          edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
+          save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
+        } else if(i == 10){
+          x.appendChild(span)
+          span.id = `motherSur_1`
+          edit_button.id = "edit_button_motherSur_1"
+          save_button.id = "save_button_motherSur_1"
+          save_button.style.display = "none"
+          span.innerHTML = `${d["mother_surname"]}`
+          x.appendChild(edit_button)
+          x.appendChild(save_button)
+          edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
+          save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
+        } else if(i == 11){
           x.appendChild(span)
           span.id = `fatherOcc_1`
           edit_button.id = "edit_button_fatherOcc_1"
@@ -626,7 +648,7 @@ initZoom()
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
-        } else if(i == 10){
+        } else if(i == 12){
           x.appendChild(span)
           span.id = `motherOcc_1`
           edit_button.id = "edit_button_motherOcc_1"
@@ -637,7 +659,7 @@ initZoom()
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
-        } else if(i == 11){
+        } else if(i == 13){
           x.appendChild(span)
           span.id = `marriage_1`
           edit_button.id = "edit_button_marriage_1"
@@ -648,7 +670,7 @@ initZoom()
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
-        } else if(i == 12){
+        } else if(i == 14){
           x.appendChild(span)
           span.id = `p_marriage_1`
           edit_button.id = "edit_button_p_marriage_1"
@@ -659,7 +681,7 @@ initZoom()
           x.appendChild(save_button)
           edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
           save_button.onclick = () => save(span.id,edit_button.id,save_button.id,d)
-        } else if(i == 13){
+        } else if(i == 15){
           x.appendChild(span)
           span.id = `death_1`
           edit_button.id = "edit_button_death_1"
@@ -696,74 +718,75 @@ initZoom()
             save_button.className = "save"
             save_button.innerHTML = "&#10003"
 
+
             if(i == 0){
               x.appendChild(span)
-              span.id = `forname_${j+2}`
-              edit_button.id = `edit_button_forname_${j+2}`
-              save_button.id = `save_button_forname_${j+2}`
-              save_button.style.display = "none"
-              span.innerHTML = a["Forname"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-              save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
-            } if(i == 1){
+              span.id = `dataset_1`
+              span.innerHTML = d["dataset"]
+            }if(i == 1){
               x.appendChild(span)
-              span.id = `surname_${j+2}`
-              edit_button.id = `edit_button_surname_${j+2}`
-              save_button.id = `save_button_surname_${j+2}`
-              save_button.style.display = "none"
-              span.innerHTML = a["Surname"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-              save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
+              span.id = `forname_${j+2}`
+              span.innerHTML = a["Forname"]
             } if(i == 2){
               x.appendChild(span)
-              span.id = `birthday_${j+2}`
-              edit_button.id = `edit_button_birthday_${j+2}`
-              save_button.id = `save_button_birthday_${j+2}`
-              save_button.style.display = "none"
-              span.innerHTML = a["birthday"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-             save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
+              span.id = `surname_${j+2}`
+              span.innerHTML = a["Surname"]
             } if(i == 3){
               x.appendChild(span)
-              span.id = `sex_${j+2}`
-              edit_button.id = `edit_button_sex_${j+2}`
-              save_button.id = `save_button_sex_${j+2}`
-              save_button.style.display = "none"
-              span.innerHTML = a["sex"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-              save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
+              span.id = `birthday_${j+2}`
+              span.innerHTML = a["birthday"]
             } if(i == 4){
               x.appendChild(span)
-              span.id = `occupation_${j+2}`
-              edit_button.id = `edit_button_occupation_${j+2}`
-              save_button.id = `save_button_occupation_${j+2}`
-              save_button.style.display = "none"
-              span.innerHTML = a["occupation"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-              save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
+              span.id = `sex_${j+2}`
+              span.innerHTML = a["sex"]
             } if(i == 5){
               x.appendChild(span)
+              span.id = `occupation_${j+2}`
+              span.innerHTML = a["occupation"]
+            } if(i == 6){
+              x.appendChild(span)
               span.id = `address_${j+2}`
-              edit_button.id = `edit_button_address_${j+2}`
-              save_button.id = `save_button_address_${j+2}`
-              save_button.style.display = "none"
               span.innerHTML = a["address"]
-              x.appendChild(edit_button)
-              x.appendChild(save_button)
-              edit_button.onclick = () => edit(span.id,edit_button.id,save_button.id)
-              save_button.onclick = () => save(span.id,edit_button.id,save_button.id)
-            }
+            } else if(i == 7){
+              x.appendChild(span)
+              span.id = `fatherFor_${j+2}`
+              span.innerHTML = `${d["father_forname"]}`
+            } else if(i == 8){
+              x.appendChild(span)
+              span.id = `fatherSur_${j+2}`
+              span.innerHTML = `${d["father_surname"]}`
+            }  else if(i == 9){
+              x.appendChild(span)
+              span.id = `motherFor_${j+2}`
+              span.innerHTML = `${d["mother_forname"]}`
+            } else if(i == 10){
+              x.appendChild(span)
+              span.id = `motherSur_${j+2}`
+              span.innerHTML = `${d["mother_surname"]}`
 
+
+            } else if(i == 11){
+              x.appendChild(span)
+              span.id = `fatherOcc_${j+2}`
+              span.innerHTML = `${d["father_occupation"]}`
+            } else if(i == 12){
+              x.appendChild(span)
+              span.id = `motherOcc_${j+2}`
+              span.innerHTML = `${d["mother_occupation"]}`
+            } else if(i == 13){
+              x.appendChild(span)
+              span.id = `marriage_${j+2}`
+              span.innerHTML = `${d["place_marriage"]}`
+            } else if(i == 14){
+              x.appendChild(span)
+              span.id = `p_marriage_${j+2}`
+              span.innerHTML = `${d["place_parents_marriage"]}`
+            } else if(i == 15){
+              x.appendChild(span)
+              span.id = `p_marriage_${j+2}`
+              span.innerHTML = `${d["date of death"]}`
+            }                  
+            
           }
 
         })
@@ -813,6 +836,10 @@ initZoom()
     })
     .then(res => res.text())
     .then(data => {
+      let time = getTime()
+      let phrase = `[${time}]   User modified the property ${span_id} of person ${d["Forname"]} ${d["Surname"]} (${d["ID"]}) to ${text_val}`
+      updateRecord(phrase)
+
       updateFilter()
     })
 
