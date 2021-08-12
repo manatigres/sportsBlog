@@ -13,6 +13,7 @@
   var nodes_activated = []
   let exclude = ["_id", "ID", "family", "marriage", "illegit", "notes", "Death", "CHILD_IDENTITY","MOTHER_IDENTITY","FATHER_IDENTITY","DEATH_RECORD_IDENTITY","PARENT_MARRIAGE_RECORD_IDENTITY","FATHER_BIRTH_RECORD_IDENTITY","MOTHER_BIRTH_RECORD_IDENTITY","MARRIAGE_RECORD_IDENTITY1","MARRIAGE_RECORD_IDENTITY2","MARRIAGE_RECORD_IDENTITY3","MARRIAGE_RECORD_IDENTITY4","MARRIAGE_RECORD_IDENTITY5","index","x","y","vy","vx","fx","fy","death code A","death code B","death code C","notes1","Birth","mar","DECEASED_IDENTITY","SPOUSE_IDENTITY","BIRTH_RECORD_IDENTITY","SPOUSE_MARRIAGE_RECORD_IDENTITY","SPOUSE_BIRTH_RECORD_IDENTITY","if father deceased","if mother deceased","color"]
   let current_filter_nodes 
+  view = "dataset_info"
 
   svg
   .attr("viewBox", [0, -height / 2, 100, height])
@@ -63,14 +64,14 @@ initZoom()
 
   function createLegends(){
     svg.append("text").attr("x", 565).attr("y", -240).text("Dataset").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
-    svg.append("circle").attr("cx",570).attr("cy",-210).attr("r", 10).style("fill", "#C64756")
+    svg.append("circle").attr("cx",570).attr("cy",-210).attr("r", 10).style("fill", "#002D62")
     svg.append("text").attr("x", 590).attr("y", -210).text("Birth").style("font-size", "15px").attr("alignment-baseline","middle")
 
 
-    svg.append("circle").attr("cx",570).attr("cy",-185).attr("r", 10).style("fill", "#DDFFBC")
+    svg.append("circle").attr("cx",570).attr("cy",-185).attr("r", 10).style("fill", "#5072A7")
     svg.append("text").attr("x", 590).attr("y", -185).text("Marriage").style("font-size", "15px").attr("alignment-baseline","middle")   
 
-    svg.append("circle").attr("cx",570).attr("cy",-160).attr("r", 10).style("fill", "#EDF5E1")
+    svg.append("circle").attr("cx",570).attr("cy",-160).attr("r", 10).style("fill", "#89CFF0")
     svg.append("text").attr("x", 590).attr("y", -160).text("Death").style("font-size", "15px").attr("alignment-baseline","middle")   
 
     svg.append("text").attr("x", 550).attr("y", -110).text("Relationship").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
@@ -340,8 +341,9 @@ initZoom()
     }
   }
 
-  function showRelation(d){
+  
 
+  function showRelation(d){
     document.getElementById("rel_div").style.display = "inline"
     document.getElementById("rel_div").innerHTML  =""
 
@@ -945,7 +947,7 @@ initZoom()
   function createVis(data, main){
       document.getElementById("g").innerHTML = ""
       createLegends()
-      view = "dataset_info"
+      //view = "dataset_info"
       ///////////////////////////////////////////////////////////////
 
 
@@ -1207,11 +1209,11 @@ initZoom()
       })
       .style("fill", function (d) { 
           if(d["dataset"] == "birth"){
-              return '#C64756';
+              return '#002D62';
           } else if(d["dataset"] == "marriage"){
-              return '#DDFFBC';
+              return '#5072A7';
           } else if(d["dataset"] == "death"){
-            return '#EDF5E1';
+            return '#89CFF0';
         }
         }) 
         .style("stroke", function (d) {
@@ -1283,12 +1285,12 @@ initZoom()
       })
       .style("fill", function (d) { 
         if(d["dataset"] == "birth"){
-          return '#C64756';
-      } else if(d["dataset"] == "marriage"){
-          return '#DDFFBC';
-      } else if(d["dataset"] == "death"){
-        return '#EDF5E1';
-    }
+          return '#002D62';
+        } else if(d["dataset"] == "marriage"){
+            return '#5072A7';
+        } else if(d["dataset"] == "death"){
+          return '#89CFF0';
+      }
     })
     .style("stroke", function (d) {
       if(d["sex"] == "F"){
@@ -1448,11 +1450,11 @@ var node = svg2
     })
     .style("fill", function (d) { 
       if(d["dataset"] == "birth"){
-          return '#C64756';
+        return '#002D62';
       } else if(d["dataset"] == "marriage"){
-          return '#DDFFBC';
+          return '#5072A7';
       } else if(d["dataset"] == "death"){
-        return '#EDF5E1';
+        return '#89CFF0';
     }
     }) 
     .style("stroke", function (d) {
@@ -1524,11 +1526,11 @@ function handleMouseOut(d, i) {
     })
     .style("fill", function (d) { 
       if(d["dataset"] == "birth"){
-          return '#C64756';
+        return '#002D62';
       } else if(d["dataset"] == "marriage"){
-          return '#DDFFBC';
+          return '#5072A7';
       } else if(d["dataset"] == "death"){
-        return '#EDF5E1';
+        return '#89CFF0';
     }
     }) 
     .style("stroke", function (d) {
@@ -1672,7 +1674,7 @@ function dragended(d) {
 
               document.getElementById("add_list").onclick = () => {
                 createListCollection(d,value)
-                updateFilter()
+                getFilterLists()
               }
 
               //list.addEventListener("click", () => createListCollection(d,name));
@@ -1954,7 +1956,7 @@ function dragended(d) {
             getFilterLists()
             document.getElementById("delete_list").onclick = () => {
               removeList()
-              getFilterLists()
+              updateFilter()
             }
           } else if(tabLink.id == "button_2"){
             loadActivity()
