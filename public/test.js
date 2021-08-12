@@ -63,42 +63,42 @@ initZoom()
   }
 
   function createLegends(){
-    svg.append("text").attr("x", 565).attr("y", -240).text("Dataset").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
-    svg.append("circle").attr("cx",570).attr("cy",-210).attr("r", 10).style("fill", "#002D62")
-    svg.append("text").attr("x", 590).attr("y", -210).text("Birth").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 505).attr("y", -240).text("Dataset").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",510).attr("cy",-210).attr("r", 10).style("fill", "#002D62")
+    svg.append("text").attr("x", 530).attr("y", -210).text("Birth").style("font-size", "15px").attr("alignment-baseline","middle")
 
 
-    svg.append("circle").attr("cx",570).attr("cy",-185).attr("r", 10).style("fill", "#5072A7")
-    svg.append("text").attr("x", 590).attr("y", -185).text("Marriage").style("font-size", "15px").attr("alignment-baseline","middle")   
+    svg.append("circle").attr("cx",510).attr("cy",-185).attr("r", 10).style("fill", "#5072A7")
+    svg.append("text").attr("x", 530).attr("y", -185).text("Marriage").style("font-size", "15px").attr("alignment-baseline","middle")   
 
-    svg.append("circle").attr("cx",570).attr("cy",-160).attr("r", 10).style("fill", "#89CFF0")
-    svg.append("text").attr("x", 590).attr("y", -160).text("Death").style("font-size", "15px").attr("alignment-baseline","middle")   
+    svg.append("circle").attr("cx",510).attr("cy",-160).attr("r", 10).style("fill", "#89CFF0")
+    svg.append("text").attr("x", 530).attr("y", -160).text("Death").style("font-size", "15px").attr("alignment-baseline","middle")   
 
-    svg.append("text").attr("x", 550).attr("y", -110).text("Relationship").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
-    svg.append("rect").attr("x",545).attr("y",-84).attr("width", 45).attr("height", 5).style("fill", "purple")
-    svg.append("text").attr("x", 600).attr("y", -80).text("Spouse").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("text").attr("x", 490).attr("y", -110).text("Relationship").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
+    svg.append("rect").attr("x",485).attr("y",-84).attr("width", 45).attr("height", 5).style("fill", "purple")
+    svg.append("text").attr("x", 540).attr("y", -80).text("Spouse").style("font-size", "15px").attr("alignment-baseline","middle") 
 
-    svg.append("rect").attr("x",545).attr("y",-60).attr("width", 45).attr("height", 5).style("fill", "gray")
-    svg.append("text").attr("x", 600).attr("y", -56).text("Mother").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("rect").attr("x",485).attr("y",-60).attr("width", 45).attr("height", 5).style("fill", "gray")
+    svg.append("text").attr("x", 540).attr("y", -56).text("Mother").style("font-size", "15px").attr("alignment-baseline","middle") 
 
-    svg.append("rect").attr("x",545).attr("y",-36).attr("width", 45).attr("height", 5).style("fill", "green")
-    svg.append("text").attr("x", 600).attr("y", -32).text("Father").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("rect").attr("x",485).attr("y",-36).attr("width", 45).attr("height", 5).style("fill", "green")
+    svg.append("text").attr("x", 540).attr("y", -32).text("Father").style("font-size", "15px").attr("alignment-baseline","middle") 
 
-    svg.append("text").attr("x", 560).attr("y", 15).text("Gender").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
-    svg.append("circle").attr("cx",570).attr("cy",45).attr("r", 9).style("fill", "white").style("stroke", "black").style("stroke-width", 4)
-    svg.append("text").attr("x", 590).attr("y", 47).text("Male").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("text").attr("x", 500).attr("y", 15).text("Gender").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",510).attr("cy",45).attr("r", 9).style("fill", "white").style("stroke", "black").style("stroke-width", 4)
+    svg.append("text").attr("x", 530).attr("y", 47).text("Male").style("font-size", "15px").attr("alignment-baseline","middle")
 
-    svg.append("circle").attr("cx",570).attr("cy",73).attr("r", 9).style("fill", "white").style("stroke", "#0A81AB").style("stroke-width", 4)
-    svg.append("text").attr("x", 590).attr("y", 75).text("Female").style("font-size", "15px").attr("alignment-baseline","middle")
+    svg.append("circle").attr("cx",510).attr("cy",73).attr("r", 9).style("fill", "white").style("stroke", "#0A81AB").style("stroke-width", 4)
+    svg.append("text").attr("x", 530).attr("y", 75).text("Female").style("font-size", "15px").attr("alignment-baseline","middle")
     
-    svg.append("text").attr("x", 565).attr("y", 125).text("Links").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
-    svg.append("rect").attr("x",545).attr("y",150).attr("width", 45).attr("height", 5).style("fill", "purple")
-    svg.append("text").attr("x", 600).attr("y", 150).text("Original").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("text").attr("x", 505).attr("y", 125).text("Links").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
+    svg.append("rect").attr("x",485).attr("y",150).attr("width", 45).attr("height", 5).style("fill", "gray")
+    svg.append("text").attr("x", 540).attr("y", 150).text("Original").style("font-size", "15px").attr("alignment-baseline","middle") 
 
-    svg.append("rect").attr("x",545).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
-    svg.append("rect").attr("x",560).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
-    svg.append("rect").attr("x",575).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
-    svg.append("text").attr("x", 600).attr("y", 174).text("Created").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("rect").attr("x",485).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
+    svg.append("rect").attr("x",500).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
+    svg.append("rect").attr("x",515).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
+    svg.append("text").attr("x", 540).attr("y", 174).text("Created").style("font-size", "15px").attr("alignment-baseline","middle") 
 
   }
 
@@ -892,6 +892,7 @@ initZoom()
 
 
   function getBirthDatabase(data){
+    console.log(data)
     let value = document.getElementById("limit").value
       if(data){
         document.getElementById("loader").style.display = "block";
@@ -1969,12 +1970,25 @@ function dragended(d) {
           tabContents[i].classList.add("active");
       });
   });
+
+  function runExample(){
+    filter["sex"] = "M"
+    filter["surname"] = "Meier"
+    getBirthDatabase(filter)
+    
+
+  }
+
   
 
   window.onload = () => {
       loadLists()
+      /*runExample()
+      for(let x in filter){
+        filter[`${x}`] = false
+        console.log(filter[`${x}`])
+      }*/
       getBirthDatabase()
-      
   }
 
 })();
