@@ -93,12 +93,12 @@ initZoom()
     
     svg.append("text").attr("x", 505).attr("y", 125).text("Links").style("font-size", "15px").style("font-weight", "bold").attr("alignment-baseline","middle")
     svg.append("rect").attr("x",485).attr("y",150).attr("width", 45).attr("height", 5).style("fill", "gray")
-    svg.append("text").attr("x", 540).attr("y", 150).text("Original").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("text").attr("x", 540).attr("y", 150).text("Original links").style("font-size", "15px").attr("alignment-baseline","middle") 
 
     svg.append("rect").attr("x",485).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
     svg.append("rect").attr("x",500).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
     svg.append("rect").attr("x",515).attr("y",174).attr("width", 10).attr("height", 5).style("fill", "gray")
-    svg.append("text").attr("x", 540).attr("y", 174).text("Created").style("font-size", "15px").attr("alignment-baseline","middle") 
+    svg.append("text").attr("x", 540).attr("y", 174).text("Modified links").style("font-size", "15px").attr("alignment-baseline","middle") 
 
   }
 
