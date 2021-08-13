@@ -78,7 +78,7 @@ initZoom()
     svg.append("rect").attr("x",485).attr("y",-84).attr("width", 45).attr("height", 5).style("fill", "purple")
     svg.append("text").attr("x", 540).attr("y", -80).text("Spouse").style("font-size", "15px").attr("alignment-baseline","middle") 
 
-    svg.append("rect").attr("x",485).attr("y",-60).attr("width", 45).attr("height", 5).style("fill", "gray")
+    svg.append("rect").attr("x",485).attr("y",-60).attr("width", 45).attr("height", 5).style("fill", "red")
     svg.append("text").attr("x", 540).attr("y", -56).text("Mother").style("font-size", "15px").attr("alignment-baseline","middle") 
 
     svg.append("rect").attr("x",485).attr("y",-36).attr("width", 45).attr("height", 5).style("fill", "green")
@@ -209,6 +209,7 @@ initZoom()
       input = "list"
       let x = document.createElement("SELECT")
       x.id = "select"
+      x.className = "select"
       x.name = "select"
 
       document.getElementById("input").innerHTML = ""
@@ -892,7 +893,6 @@ initZoom()
 
 
   function getBirthDatabase(data){
-    console.log(data)
     let value = document.getElementById("limit").value
       if(data){
         document.getElementById("loader").style.display = "block";
@@ -904,6 +904,7 @@ initZoom()
             document.getElementById("g").style.display = "block";
             nodes_activated = jsn[2]
             document.getElementById("count").innerHTML = `Showing ${nodes_activated.length} results of ${jsn[1]}`
+            document.getElementById("count").style.visibility = "visible"
             jsn = jsn[0]
 
 
@@ -991,9 +992,9 @@ initZoom()
                     }
                   } else if(data[i].sex == "F"){
                     if(data[i]["new_rel"].includes(child)){
-                      graph.links.push({source: data[i]["ID"], target: child, color: "#800000", rel: "mother-child", dash:true})
+                      graph.links.push({source: data[i]["ID"], target: child, color: "red", rel: "mother-child", dash:true})
                     }else{
-                      graph.links.push({source: data[i]["ID"], target: child, color: "#800000", rel: "mother-child"})
+                      graph.links.push({source: data[i]["ID"], target: child, color: "red", rel: "mother-child"})
                     }
                 }
               }
@@ -1851,6 +1852,7 @@ function dragended(d) {
 }
 
   document.getElementById("search_button").onclick = () =>{
+    document.getElementById("row4").style.display = "inline"
     let search_value
     if(input == "text"){
       search_value = document.getElementById("search").value
@@ -1874,25 +1876,30 @@ function dragended(d) {
       function removeButton(e) {
         e.target.remove();
         filter[e.target.id] = false
+        var x = document.getElementById("selected_filters_div").childElementCount;
+        if(x == 0){
+          document.getElementById("row4").style.display = "none"
+        }
         getBirthDatabase(filter) 
       }
 
       document.getElementById("clear").onclick = () => clear()
-      document.getElementById("rerun").onclick = () => rerun()
+     // document.getElementById("rerun").onclick = () => rerun()
 
       function clear(){
         for(let x in filter){
           filter[`${x}`] = false
           console.log(filter[`${x}`])
           document.getElementById("selected_filters_div").innerHTML = ""
-          getBirthDatabase() 
         }
+        document.getElementById("count").style.visibility = "hidden"
+        document.getElementById("g").innerHTML = ""
+        document.getElementById("row4").style.display = "none"
       }
 
 
 
       document.getElementById("selected_filters_div").append(new_filter_button)
-
       filter[filter_search] = search_value
 
       let phrase_list = [] 
