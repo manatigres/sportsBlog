@@ -1068,59 +1068,7 @@ initZoom()
                 }
               }
             }
-
-
-
-
-
-
-
-
-
-
-            /*
-            if(data[i].dataset == "marriage" && data[i].role == "groom"){
-              if(graph.nodes.findIndex(x => x["ID"] === data[i]["spouse"][0]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["spouse"][0], color: "purple"})
-              }
-              if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][0]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][0], color: "gray"})
-              }
-              if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][1]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][1], color: "gray"})
-              }
-              
-            }
-            
-            if(data[i].dataset == "marriage" && data[i].role == "bride"){
-              let repeated
-              for (let j = 0; j < graph.links.length; j++){
-                if(graph.links[j].source == data[i]["spouse"] && graph.links[j].target == data[i]["ID"]){
-                  repeated = "don't add"
-                }
-              }
-              if(repeated !== "don't add" && graph.nodes.findIndex(x => x["ID"] === data[i]["spouse"][0]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["spouse"][0], color: "purple"})
-              }
-              if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][0]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][0], color: "gray"})
-              }
-              if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][1]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][1], color: "gray"})
-              }
-            }
-            
-            if(data[i].dataset == "death" && data[i].role == "deceased"){
-             if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][0]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][0]})
-             }
-             if(graph.nodes.findIndex(x => x["ID"] === data[i]["parents"][1]) !== -1){
-                graph.links.push({source: data[i]["ID"], target: data[i]["parents"][1]})
-             }
-            }
-
-            */
-          }
+      }
           
 
           console.log(graph.links)
@@ -1153,6 +1101,24 @@ initZoom()
       //.force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
+      
+
+      d3.select('svg g').append("svg:defs").append("svg:marker")
+      .attr("id", "triangle")
+      .attr("refX", 6)
+      .attr("refY", 6)
+      .attr("markerWidth", 30)
+      .attr("markerHeight", 30)
+      .attr("markerUnits","userSpaceOnUse")
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M 0 0 12 6 0 12 3 6")
+      .style("fill", "black");
+
+
+
+
+
 
     var link = d3.select('svg g')
       .append("g")
@@ -1161,6 +1127,7 @@ initZoom()
       .data(graph.links)
       .enter()
       .append("line")
+       .attr('marker-end','url(#arrowhead)')
       .style("stroke", function (d) {
         return d.color
     })
@@ -1205,8 +1172,12 @@ initZoom()
       .enter()
       .append("circle")
       .attr("r", (d) => {
-
-          return radius * ( 1 + (d["people_absorbed"].length * 0.1))
+        if(d["people_absorbed"].length > 0){
+          return radius * 1.5
+        } else {
+          return radius
+        }
+          //return radius * ( 1 + (d["people_absorbed"].length * 0.1))
 
       })
       .style("fill", function (d) { 
@@ -1242,48 +1213,33 @@ initZoom()
      
           hover_text = `${d["Forname"]} ${d["Surname"]}` 
 
-
-          /*
-   
-      // Add interactivity
-      d3.selectAll("circle")
-      .style("opacity", 0.75)
-      d3.selectAll("line")
-      .style("opacity", 0.5)
-
-      */
         d3.select(this).transition()
-        .attr("r", radius * 1.5)
-
+        .attr("r", (d) => {
+          if(d["people_absorbed"].length > 0){
+            return radius * 1.8
+          } else {
+            return radius * 1.5
+          }
+        })
 
         .style("stroke-width", "3px")
         //.style("fill", "orange")
         .style("opacity", 1)
         
-
-      /*
-        d3.select("svg")
-        .append("text")
-            .attr("class","tooltip")
-            .attr("x",d.x + 50)
-            .attr("y", d.y + 5 )
-            .text(hover_text)
-            */
     }
 
 
   function handleMouseOut(d, i) {
       d3.selectAll("circle","line")
-      /*
-      .style("opacity", 1)
-      d3.selectAll("line")
-      .style("opacity", 1)*/
-      // Use D3 to select element, change color back to normal
+
       // Add interactivity
       d3.select(this).transition()
       .attr("r", (d) => {
-        return radius * ( 1 + (d["people_absorbed"].length * 0.1))
-
+        if(d["people_absorbed"].length > 0){
+          return radius * 1.5
+        } else {
+          return radius 
+        }
       })
       .style("fill", function (d) { 
         if(d["dataset"] == "birth"){
