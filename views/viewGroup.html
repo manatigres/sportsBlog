@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+
+
+        h1 {
+            text-align: center;
+            width: 1100px;
+            margin: 10px;
+            padding: 5px;
+            font-size: 40px;
+            color: black;
+            font-weight:800;
+            font-family: "Calibri";
+        }
+
+        #tag{
+            font-size: 30px;
+            font-weight: normal;
+            font-style: italic;
+            color: darkred;
+        }
+
+
+        h2 {
+            text-align: left;
+            width: 1100px;
+            margin: 10px;
+            padding: 5px;
+            font-size: 25px;
+            color: black;
+            font-weight:800;
+            font-family: "Calibri";
+        }
+
+        .description {
+            text-align: left;
+            margin: 10px 500px 10px 180px;
+            padding: 5px;
+            font-size: 25px;
+            color: black;
+            font-weight:500;
+            font-family: "Calibri";
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 25px;
+            color: black;
+            font-weight:800;
+            font-family: "Calibri";
+        }
+
+        #membersDiv, #commentsDiv  {
+            width: 50%;
+            height: flex;
+            background: white;
+            margin-left: 13%;
+            margin-top: 50px;
+            padding: 5px;
+            font-size: 25px;
+            color: black;
+            border: 1.5px solid grey;
+            border-radius: 10px;
+            font-family: "Calibri";
+        }
+
+        #commentsDiv{
+            width: 60%;
+            margin-left: 8%;
+        }
+
+
+        .buttons {
+            text-align: center;
+            min-width: 200px;
+            margin: 10px;
+            padding: 5px;
+            font-size: 30px;
+            background-color: lightblue;
+            border-radius: 10px;
+            font-family: "Calibri";
+        }
+
+        #post{
+            text-align: center;
+            min-width: 100px;
+            padding: 3px;
+            font-size: 20px;
+            background-color: lightblue;
+            border-radius: 7px;
+            font-family: "Calibri";
+        }
+
+        .commentslist{
+            width: 750px;
+            margin-left: 80px;
+            margin-bottom: 35px;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        #postDiv{
+            margin: 0 50px;
+        }
+
+        #buttonsDiv{
+            height: 200px;
+            position: relative;
+        }
+
+        #goBack{
+            position: absolute;
+            margin-top: 30px;
+            margin-left: 300px;
+        }
+
+        #leave, #join{
+            position: absolute;
+            margin-top: 30px;
+            margin-left: 600px;
+        }
+        #descriptionTitle{
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+    <h1 >Group <%= group %></h1>
+    <h1 id="tag"></h1><br>
+
+
+    <h4 class="description"><span id="descriptionTitle">Description: </span><span  id="description"></span></h4><br>
+
+    <hr class="dropdown-divider" />
+
+
+    <div id="membersDiv">
+        <h3>List of members</h3>
+        <ul id="members">
+
+        </ul><br>
+    </div><br>
+
+    <hr class="dropdown-divider" />
+    <div id="commentsDiv">
+        <h3>Comments</h3>
+
+        <div id="postDiv">
+                <label class="w3-text-blue"><b>Post comment</b></label>
+                <input class="w3-input w3-border" name="first" type="text" id="comments"></p>
+                <button id="post" >Post</button></p>
+
+        </div>
+        <hr class="dropdown-divider" />
+        <section class="commentslist" id="commentslist">
+
+        </section>
+        <div class="commentslist" id="onlyMessage" ></div>
+    </div>
+
+    <hr class="dropdown-divider" />
+
+    <div id="buttonsDiv">
+        <button class="buttons" id="goBack" type="button" class="btn btn-primary" onclick="goBack()">Go back</button>
+        <button class="buttons" id="join"  type="button"  onclick="joinGroup()">Join group</button>
+        <button class="buttons" id="leave"  type="button"  onclick="leaveGroup()">Leave group</button>
+    </div>
+
+    <script>
+
+        (function () {
+            let groupName = '<%= group %>'
+            let user = localStorage.getItem("userEmail");
+
+            //Go back button
+            function goBack(){
+                document.getElementById("goBack").onclick = () => {
+                    location.href = '/'
+                }
+            }
+
+
+            function isAMember() {
+                document.getElementById("join").style.visibility = "hidden"
+                document.getElementById("leave").style.visibility = "visible"
+            }
+
+            function isNotAMember() {
+                document.getElementById("post").disabled = true
+                document.getElementById("comments").disabled = true
+                document.getElementById("join").style.visibility = "visible"
+                document.getElementById("leave").style.visibility = "hidden"
+                document.getElementById("commentslist").style.display = "none"
+                document.getElementById("onlyMessage").innerText = "Only members can see or write comments"
+            }
+
+
+            function checkIfMember() {
+                fetch('/groups/' + groupName + "/users")
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.find(x => x.userID === user)){
+                            isAMember()
+                        } else {
+                            isNotAMember()
+                        }
+                    })
+            }
+
+            //Join Group
+            function joinGroup() {
+                document.getElementById("join").onclick = () => {
+                    fetch(`/groups/${groupName}/users/${user}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(res => res.json())
+                        .then(data => console.log(data))
+                    location.reload();
+                }
+
+            }
+
+            //Leave Group
+            function leaveGroup() {
+                document.getElementById("leave").onclick = () => {
+                    fetch(`/groups/delete/${groupName}/users/${user}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(res => res.json())
+                        .then(data => console.log(data))
+                    location.reload();
+                }
+            }
+
+
+
+            //Get group description
+            function description() {
+                fetch('/groups/description/' + groupName)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.description === null || data.description === undefined) {
+                            document.getElementById("description").innerHTML = "No description yet"
+                        } else {
+                            document.getElementById("description").innerHTML = data.description
+                        }
+                    })
+            }
+
+            //Get group tag
+            function tag() {
+                fetch('/groups/tags/' + groupName)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.tags === null || data.tags === undefined) {
+                            document.getElementById("tag").innerHTML = "No tags"
+                        } else {
+                            document.getElementById("tag").innerHTML = `#${data.tags}`
+                        }
+                    })
+            }
+
+            //Get members of the group
+            function getMembers() {
+                fetch('/groups/' + groupName + "/users")
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            let il = document.createElement("li")
+                            il.innerText = "This group doesn't have any members yet."
+                            document.getElementById("members").appendChild(il)
+                        } else {
+                            for (let i of data) {
+                                fetch('/username/' + i.userID)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        let il = document.createElement("li")
+                                        il.innerHTML = `<a href="" ><span style="font-weight: bold";> ${data.name} </span> <span style="color: gray; font-size: 18px"> (${i.userID})</span></a>`
+                                        document.getElementById("members").appendChild(il)
+                                    })
+
+
+                            }
+                        }
+                    })
+            }
+
+
+            //post a comment
+            function postComments() {
+                let postTime = getTime();
+                let comments = document.getElementById('comments').value;
+                if (comments == "") {
+                    alert("Please write a comment before posting");
+                } else {
+                    let record = { "time": postTime, "message": comments };
+                    fetch(`/comments/users/${user}/groups/${groupName}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(record)
+                    })
+                        .then(res => res.text())
+                        .then(info => {
+                            document.getElementById("comments").value = "";
+                        })
+                    location.reload();
+                }
+                getMessages();
+            }
+
+
+            //Get all messages for that group
+            const getMessages = function () {
+                const list = document.getElementById("commentslist");
+                list.innerHTML = "";
+                fetch(`/comments/groups/${groupName}`)
+                    .then(res => res.json())
+                    .then(jsn => {
+                        for (let msg of jsn) {
+                            let div = document.createElement("div");
+                            div.innerHTML = `<span style="color:blue; font-size: 18px;">${msg.username}</span> <span style="color:gray; font-size: 16px; margin-left: 10px">(${msg.time}) </span> <br><span style="font-size: 30px">${msg.message}</span>`
+                            list.appendChild(div)
+                            let bar = document.createElement("HR")
+                            bar.className = "dropdown-divider"
+                            bar.style.margin = 0
+                            list.appendChild(bar)
+                        }
+                    })
+            }
+
+            function getTime() {
+                let today = new Date();
+                let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                let time = today.getHours() + ":" + today.getMinutes();
+                let dateTime = date + ' ' + time;
+                return dateTime
+            }
+
+
+
+
+            //when the page loads
+            window.onload = () => {
+                checkIfMember();
+                tag();
+                description();
+                getMessages();
+                getMembers();
+                goBack();
+                joinGroup();
+                leaveGroup();
+                document.getElementById('post').onclick = postComments;
+                
+
+            }
+
+        })();
+
+
+
+
+
+    </script>
+</body>
+
+</html>

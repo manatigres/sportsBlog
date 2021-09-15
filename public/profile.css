@@ -1,0 +1,94 @@
+h1 {
+  text-align: center;
+  width: 1100px;
+  margin: 10px;
+  padding: 5px;
+  font-size: 40px;
+  color: black;
+  font-weight:800;
+  font-family: "Calibri";
+}
+
+
+h2 {
+  text-align: left;
+  width: 1100px;
+  margin: 10px;
+  padding: 5px;
+  font-size: 25px;
+  color: black;
+  font-weight:800;
+  font-family: "Calibri";
+}
+
+#name, #email {
+  text-align: left;
+  margin: 10px;
+  padding: 5px;
+  font-size: 25px;
+  color: black;
+  font-weight:500;
+  font-family: "Calibri";
+}
+
+h3 {
+  text-align: center;
+  font-size: 25px;
+  color: black;
+  font-weight:800;
+  font-family: "Calibri";
+}
+
+#groupList, #gameList, #eventList  {
+    width: 352px;
+    height: flex;
+    background: white;
+    margin: 10px;
+    padding: 5px;
+    font-size: 25px;
+    color: black;
+    border: 1.5px solid grey;
+    border-radius: 10px;
+    font-family: "Calibri";
+}
+
+#personalTotals div {
+    width: 352px;
+    height: flex;
+    background: orange;
+    margin: 10px;
+    padding: 5px;
+    font-size: 25px;
+    color: black;
+    border: 1.5px solid grey;
+    border-radius: 10px;
+    font-family: "Calibri";
+}
+
+p {
+  text-align: center;
+  margin: 10px;
+  padding: 5px;
+  font-size: 50px;
+  color: black;
+  font-weight:800;
+  font-family: "Calibri";
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  width: 1150px;
+  height: 75px;
+}
+
+#goBack {
+  text-align: center;
+  min-width: 200px;
+  margin: 10px;
+  padding: 5px;
+  font-size: 30px;
+  background-color: lightblue;
+  border-radius: 10px;
+  font-family: "Calibri";
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="admin.js"></script>
+
+  <link rel="stylesheet" href="admin.css">
+
+
+  <title>Admin page</title>
+</head>
+
+  <body onLoad="">
+
+  <!-- Banner -->
+  <div id="banner">
+    <img src="sports_banners.png" alt="banner" width=1150px>
+  </div>
+
+  <div id="header">
+    <h1>Admin Site Analytics</h1>
+  </div>
+
+  <hr class="dropdown-divider" />
+
+
+  <!-- Members stats -->
+
+  <section id="members">
+
+    <h2>Members</h2>
+
+    <div id= mtot style="display: inline-block;">
+      <h3>Total number of Members</h3>
+      <p id="memberStat"></p>
+    </div>
+
+    <div id= amg style="display: inline-block;">
+      <h3>Average number of Members per Group</h3>
+      <p id="memberag"></p>
+    </div>
+
+    <div id= amga style="display: inline-block;">
+      <h3>Average number of Members per Game</h3>
+      <p id="memberaga"></p>
+    </div>
+
+    <div id= ame style="display: inline-block;">
+      <h3>Average number of Members per Event</h3>
+      <p id="memberae"></p>
+    </div>
+
+    <!-- <div>
+      <h3>Cumulative number of Members</h3>
+      <p id="memberGraph"></p>
+    </div> -->
+
+  </section>
+
+  <hr class="dropdown-divider" />
+
+
+  <!-- Groups stats -->
+
+  <section id="groups">
+
+    <h2>Groups</h2>
+
+    <div id= gg style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Groups</h3>
+      <p id="groupStat"></p>
+    </div>
+
+    <div id= ggm style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Members per Group</h3>
+      <p id="groupNames" style="display: inline-block; vertical-align: top;"></p>
+      <p id="groupUsers" style="display: inline-block; vertical-align: top;"></p>
+    </div>
+
+  </section>
+
+  <hr class="dropdown-divider" />
+
+  <!-- Games stats -->
+
+  <section id="games">
+
+    <h2>Games</h2>
+
+    <div id= gga style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Games</h3>
+      <p id="gameStat"></p>
+    </div>
+
+
+  <div id= ggaa style="display: inline-block; vertical-align: top;">
+    <h3>Total number of Active Games</h3>
+    <p id="gameActive"></p>
+  </div>
+
+  <div id= ggacy style="display: inline-block; vertical-align: top;">
+    <h3>Total number of Games per Year</h3>
+    <p id="gameYear">
+    </p>
+  </div>
+
+
+<div id= ggacl style="display: inline-block; vertical-align: top;">
+  <h3>Top Game Locations</h3>
+  <p id="gameLocation"></p>
+</div>
+
+</section>
+
+  <hr class="dropdown-divider" />
+
+  <!-- Events stats -->
+
+  <section id="events">
+
+    <h2>Events</h2>
+
+    <div id= ge style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Events</h3>
+      <p id="eventStat"></p>
+    </div>
+
+    <div id= gea style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Active Events</h3>
+      <p id="eventActive"></p>
+    </div>
+
+    <div id= gecy style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Events per Year</h3>
+      <p id="eventYear"></p>
+    </div>
+
+
+  <div id= gecl style="display: inline-block; vertical-align: top;">
+    <h3>Top Event Locations</h3>
+    <p id="eventLocation"></p>
+  </div>
+
+  </section>
+
+
+
+  <!-- Go back button -->
+  <div class=container>
+    <button id="goBack" type="button" class="btn btn-primary" onclick="goBack()" style="display: inline-block;">Go back</button>
+  </div>
+
+  </body>
+
+</html>

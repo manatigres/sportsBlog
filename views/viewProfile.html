@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1><%= name %>'s Profile </h1>
+<h4> <%= email %></h4><br>
+
+<h3>Groups joined</h3>
+<ul id="groups">
+
+</ul><br>
+<h3>Events joined</h3>
+<ul id="events">
+
+</ul><br>
+<h3>Games joined</h3>
+<ul id="games">
+
+</ul><br>
+
+
+<button id="goBack" type="button" class="btn btn-primary" onclick="goBack()">Go back</button>
+
+<script>
+
+    (function(){
+
+        let name = '<%= name %>'
+        let email = '<%= email %>'
+
+        document.getElementById("goBack").onclick = () =>{
+            location.href = '/'
+        }
+
+        //GET ALL GROUPS THAT THE USER IS PART OF
+        function getGroups(){
+            fetch('/groups/find/' + email)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.length === 0){
+                        let il = document.createElement("li")
+                        il.innerText = "This user has not joined any group yet."
+                        document.getElementById("groups").appendChild(il)
+                    } else {
+                        for (let i of data) {
+                            let il = document.createElement("li")
+                            il.innerText = i.group
+                            document.getElementById("groups").appendChild(il)
+                        }
+                    }
+                })
+        }
+
+        //GET ALL EVENTS THAT THE USER IS PART OF
+        function getEvents(){
+            fetch('/events/find/' + email)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.length === 0){
+                        let il = document.createElement("li")
+                        il.innerText = "This user has not joined any event yet."
+                        document.getElementById("events").appendChild(il)
+                    } else {
+                        for (let i of data) {
+                            let il = document.createElement("li")
+                            il.innerText = i.event
+                            document.getElementById("events").appendChild(il)
+                        }
+                    }
+                })
+        }
+
+        //GET ALL GAMES THAT THE USER IS PART OF
+        function getGames(){
+            fetch('/games/find/' + email)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (data.length === 0){
+                        let il = document.createElement("li")
+                        il.innerText = "This user has not joined any game yet."
+                        document.getElementById("games").appendChild(il)
+                    } else {
+                        for (let i of data) {
+                            let il = document.createElement("li")
+                            il.innerText = i.game
+                            document.getElementById("games").appendChild(il)
+                        }
+                    }
+                })
+        }
+
+
+        //when the page loads
+        window.onload = () => {
+            getGroups()
+            getEvents()
+            getGames()
+
+        }
+
+    })();
+
+
+
+
+
+</script>
+</body>
+</html>

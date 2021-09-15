@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- IE will use the latest engine to render web pages-->
+  <meta charset="UTF-8">
+ 
+  <!-- The width of the page is the same as the width of the device screen. Initial scaling is 1:1-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Groups</title>
+
+  <!-- stylesheet required for bootstrap-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  
+    <link rel="stylesheet" href="creationStyle.css">
+</head>
+
+<body>
+    <h2>New Group</h2>
+    <hr class="dropdown-divider" />
+    <form onsubmit="handleSubmit(event)">
+      <dl class="row">
+        <dt class="col-3">Group Name:</dt>
+        <dd class="col-9 mb-3">
+          <input type="text"  required class="form-control" name="name" placeholder="Please add your group name" aria-describedby="basic-addon1">
+        </dd>
+        <dt class="col-3">Tags:</dt>
+        <dd class="col-9 mb-3">
+          <textarea required class="form-control" name="tags" placeholder="Tags" aria-label="With textarea"></textarea>
+        </dd>
+        <dt class="col-3">Description:</dt>
+        <dd class="col-9 mb-5">
+          <textarea  required rows="10" class="form-control" name="description" placeholder="Introduce your group and let more people know about your group" aria-label="With textarea"></textarea>
+        </dd>
+      
+      <hr class="dropdown-divider" />
+      <div>
+        <button id="sub" type="submit" class="btn btn-primary btn-lg">Create Group</button>
+        <button id="cancel" type="button" class="btn btn-secondary btn-lg" onclick="goBack()">Back</button>
+      </div>
+    </form>
+  <script src="createGroup.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="P3.css" rel="stylesheet">
+  <style>
+    #login{
+      font-size: 20px;
+      font-weight: normal;
+      margin-left: 480px;
+      background-color: transparent;
+      text-align: left;
+      margin-bottom: 150px;
+    }
+
+    #link{
+      color: blue;
+    }
+  </style>
+  <title>Community website</title>
+</head>
+
+<body onLoad="">
+
+  <!-- Banner -->
+  <div id="banner">
+    <img src="sports_banners.png" alt="banner" width=1150px>
+  </div>
+
+  <!-- Community name -->
+  <h1>Amateur and Social Sports Fans</h1>
+
+  <!-- Welcome message -->
+  <h2>Welcome to our community!</h2>
+
+  <!-- Register -->
+
+
+  <form action="/register" method='POST'>
+
+    <div style="margin-top: 70px; margin-left: 300px">
+      <label for="name" id="email_txt" style="margin-left: 55px">Name:</label>
+      <input type="text" id="name" name="name"  required>
+    </div>
+
+    <div style="margin-top: 20px; margin-left: 300px">
+      <label for="username" id="username_txt" style="margin-left: 60px">Email: </label>
+      <input type="email" id="username" name="email" required>
+    </div>
+
+    <div style="margin-left: 300px; margin-top: 20px">
+      <label for="password" id="password_txt">Password: </label>
+      <input type="password" id="password" name="password" required><br>
+    </div>
+    <div style="margin: 20px 480px;">
+      <input type="checkbox" style="" id="newsletter" name="newsletter" value="true">
+      <label for="newsletter" style="font-size: 20px; " id="newsletterLabel"> Subscribe to the newsletter</label><br>
+    </div>
+
+    <div class="error" style="margin-left: 500px;">
+      <% if (error !== "1") { %>
+      <%= error %>
+      <% } %>
+    </div>
+
+    <div class=container >
+      <button type="submit" id="submitRegister" style="margin-left: 10%">Register</button>
+    </div>
+    <p id="login" >Already have an account? <a id="link" href="/login">Log in</a></p>
+
+    </div>
+  </form>
+
+</body>
+
+</html>

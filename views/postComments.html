@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing on comments</title>
+</head>
+
+<body>
+    <h2>Write a message</h2>
+    <div><label>Message</label> <input type="text" id="message" /></div>
+    <button id="addMessageBtn">Add</button>
+    <h1>Messages</h1>
+    <section id="listOfMessages">
+
+    </section>
+
+    <script>
+        
+    (function(){
+        var name = "yx";
+        var groupname = "testGroup";
+        const addMessage = function () {
+            let data = new Object();
+            data.message = String(document.getElementById("message").value);
+            data.time = String(getTime());
+            fetch(`/comments/users/${name}/groups/${groupname}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(jsn => {
+                    //getMessages()
+                    console.log(jsn);
+                    document.getElementById("message").value = "";
+                })
+        }
+
+        const getMessages = function () {
+            const list = document.getElementById("listOfMessages");
+            list.innerHTML = "";
+            fetch(`/comments/groups/${groupname}`)
+                .then(res => res.json())
+                .then(jsn => {
+                    for (let msg of jsn) {
+                        let div = document.createElement("div");
+                        div.innerHTML = `User: <span style="color:blue">${msg.username}</span> <span style="color:red">Time: ${msg.time} </span> Message: ${msg.message}`
+                        list.appendChild(div);
+                    }
+                })
+        }
+
+
+        function getTime() {
+            let today = new Date();
+            let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            let dateTime = date + ' ' + time;
+            return dateTime
+        }
+
+        window.onload = () => { 
+            getMessages();
+            let btn = document.getElementById("addMessageBtn");
+            btn.onclick = addMessage;
+	}
+
+    })();
+    </script>
+
+</body>
+
+</html>

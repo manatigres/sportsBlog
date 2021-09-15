@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="P3.css" rel="stylesheet">
+  <title>Community website</title>
+</head>
+
+
+<body onLoad="">
+
+<div id="container_pic">
+  <div class="profile-pic-div" >
+    <img src="image.jpg" id="photo">
+  </div>
+  <h5 id="nameHeader"><%= name %></h5>
+  <div class="dropdown-content">
+    <a href="profile">Profile</a>
+    <a href="admin">Admin</a>
+    <form action="/logout?_method=DELETE" method="POST">
+      <input type="hidden" name="name" value="value" />
+      <a onclick="this.parentNode.submit();">Log out</a>
+    </form>
+
+  </div>
+</div>
+
+  <!-- Banner -->
+  <div id="banner">
+    <img src="sports_banners.png" alt="banner" width=1150px>
+  </div>
+
+  <!-- Community name -->
+  <h1>Amateur and Social Sports Fans</h1>
+
+  <!-- Welcome message -->
+  <h2>Welcome <%= name %>!</h2>
+
+  <!-- Active stats info -->
+  <section id="activeTotals">
+
+    <div style="display: inline-block;">
+      <h3>Active Groups</h3>
+      <p id="groupActive"></p>
+    </div>
+
+    <div style="display: inline-block;">
+      <h3>Active Events</h3>
+      <p id="eventActive"></p>
+    </div>
+
+    <div style="display: inline-block;">
+      <h3>Active Games</h3>
+      <p id="gameActive"></p>
+    </div>
+
+  </section>
+
+
+  <!-- List of game and event after login -->
+  <section>
+
+    <div id=groups style="display: inline-block; vertical-align:top;">
+      <h4>Groups</h4>
+      <ul id="groupList"></ul>
+    </div>
+
+    <div id=games style="display: inline-block; vertical-align:top;">
+      <h4>Games</h4>
+      <p id="selGame"></p>
+      <p id="desGame"></p>
+    </div>
+
+    <div id=events style="display: inline-block; vertical-align:top;">
+      <h4>Events</h4>
+      <p id="selEvent"></p>
+      <p id="desEvent"></p>
+    </div>
+
+  </section>
+
+  <!-- Join buttons -->
+  <div>
+    <button type="button" id="joinGroup" style="display: disabled;" onclick="joinGroup()">Join a Group</button>
+    <button type="button" id="joinGame" style="display: disabled;" onclick="joinGame()">Join a Game</button>
+    <button type="button" id="joinEvent" style="display: disabled;" onclick="joinEvent()">Join an Event</button>
+  </div>
+
+
+  <!--Buttons for Creating group, event and game -->
+  <div>
+    <button type="button" id="createGroup" onclick="createGroup()">Create a Group</button>
+    <button type="button" id="createEvent" onclick="createEventButton()">Create an Event</button>
+    <button type="button" id="createGame" onclick="createGame()">Create a Game</button>
+  </div>
+
+
+  <!-- Feeds -->
+  <section id="feeds">
+    <div id="videosfeed">
+      <h3>Promotional videos</h3>
+      <div id="player1"></div>
+      <div id="player2"></div>
+      <div id="player3"></div>
+    </div>
+
+    <div id="newsfeed">
+      <h3>Newsfeed</h3>
+    </div>
+  </section>
+
+  <script>
+    const name = "<%- name %>"
+    const email = "<%- email %>"
+
+    if (typeof(Storage) !== "undefined") {
+            // Store
+      localStorage.setItem("userName", "<%- name %>");
+      localStorage.setItem("userEmail", "<%- email %>");
+      // Retrieve
+      console.log(localStorage.getItem("name")+"+")               }
+    else {
+      document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+    }
+
+  </script>
+
+</body>
+
+  <script src="client.js"></script>
+
+</html>

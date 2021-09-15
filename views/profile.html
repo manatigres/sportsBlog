@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <link href="profile.css" rel="stylesheet">
+
+  <title>User profile page</title>
+
+</head>
+
+<body onLoad="">
+
+  <!-- Banner -->
+  <div id="banner">
+    <img src="sports_banners.png" alt="banner" width=1150px>
+  </div>
+
+  <div id="header">
+    <h1 style="display: inline-block;">Profile</h1>
+  </div>
+
+<hr class="dropdown-divider" />
+
+  <section>
+    <div>
+      <h2>Name:<p id="name" style="display: inline-block;"></p></h2>
+    </div>
+    <div>
+      <h2>Email:<p id="email" style="display: inline-block;"></p></h2>
+    </div>
+  </section>
+
+<hr class="dropdown-divider" />
+
+  <!-- Personal joins -->
+  <section id="personalJoins">
+
+    <div id="groupList" style="display: inline-block; vertical-align: top;">
+      <h3>Personal Groups joined</h3>
+    </div>
+
+    <div id="gameList"style="display: inline-block; vertical-align: top;">
+      <h3>Personal upcoming Games</h3>
+    </div>
+
+    <div id="eventList"style="display: inline-block; vertical-align: top;">
+      <h3>Personal upcoming Events</h3>
+    </div>
+
+  </section>
+
+  <!-- Personal total stats -->
+
+  <section id="personalTotals">
+
+    <div style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Groups joined</h3>
+      <p id="groupTot"></p>
+    </div>
+
+    <div style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Games attended</h3>
+      <p id="gameTot"></p>
+    </div>
+
+    <div style="display: inline-block; vertical-align: top;">
+      <h3>Total number of Events attended</h3>
+      <p id="eventTot"></p>
+    </div>
+
+  </section>
+
+  <!-- Go back button -->
+  <div class=container>
+    <button id="goBack" type="button" class="btn btn-primary" onclick="goBack()" style="display: inline-block;">Go back</button>
+  </div>
+
+</body>
+
+</html>
+  <script src="profile.js"></script>
