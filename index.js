@@ -50,7 +50,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) //optional but useful for url encoded data
 app.use(flash())
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: 'secret',
     resave: false,
     saveUninitialized: false
 }))
