@@ -1,0 +1,99 @@
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="firstPage.js"></script>
+  <link href="P3.css" rel="stylesheet">
+
+  <title>Community website</title>
+
+</head>
+
+<body onLoad="">
+
+  <!-- Banner -->
+  <div id="banner">
+    <img src="sports_banners.png" alt="banner" width=1150px>
+  </div>
+
+  <!-- Community name -->
+  <h1>Amateur and Social Sports Fans</h1>
+
+  <!-- Welcome message -->
+  <h2>Welcome to our community!</h2>
+
+  <div class="container">
+    <button type="button" onclick="login()" id="login">Login</button>
+    <button type="button" onclick="register()" id="register">Register</button>
+  </div>
+
+  <!-- Mission statement -->
+  <div>
+    <div id="mission">We are a friendly and fun community of sports enthusiasts!
+      We organise regular games to play your favourite sport, as well as some social events.
+      Please sign up to join all the games and events near you.
+    </div>
+
+
+    <!-- Total stats info -->
+    <section id="siteTotals">
+
+      <div style="display: inline-block;">
+        <h3>Number of Members</h3>
+        <p id="memberStat"></p>
+      </div>
+
+      <div style="display: inline-block;">
+        <h3>Number of Games</h3>
+        <p id="gameStat"></p>
+      </div>
+
+      <div style="display: inline-block;">
+        <h3>Number of Events</h3>
+        <p id="eventStat"></p>
+      </div>
+
+    </section>
+
+    <!-- Active stats info -->
+    <section id="activeTotals">
+
+      <div style="display: inline-block;">
+        <h3>Active Groups</h3>
+        <p id="groupActive"></p>
+      </div>
+
+      <div style="display: inline-block;">
+        <h3>Active Events</h3>
+        <p id="eventActive"></p>
+      </div>
+
+      <div style="display: inline-block;">
+        <h3>Active Games</h3>
+        <p id="gameActive"></p>
+      </div>
+
+    </section>
+
+    <!-- Join buttons -->
+    <div>
+      <button type="button" onclick="joinEvent()" id="joinGroup" style="display: disabled;">Join a Group</button>
+      <button type="button" onclick="joinGame()" id="joinGame" style="display: disabled;">Join a Game</button>
+      <button type="button" onclick="joinEvent()" id="joinEvent" style="display: disabled;">Join an Event</button>
+    </div>
+
+    <!-- Feeds -->
+    <section id="feeds">
+      <div id="videosfeed">
+        <h3>Promotional videos</h3>
+        <div id="player1"></div>
+        <div id="player2"></div>
+        <div id="player3"></div>
+      </div>
+
+      <div id="newsfeed">
+        <h3>Newsfeed</h3>
+      </div>
+    </section>
+
+</body>
