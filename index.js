@@ -1,877 +1,731 @@
+// load required packages
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
 const express = require('express')
-const path = require('path')
-const PORT = process.env.PORT || 4000
-
-
-
-const { MongoClient } = require('mongodb');
-const bp = require('body-parser')
 const app = express()
+const host = '0.0.0.0';
 const API_PORT = process.env.PORT || 22650;
-const limit = 15;
+const bcrypt = require('bcrypt')
+const passport = require('passport')
+const flash = require('express-flash')
+const session = require('express-session')
+const methodOverride = require('method-override')
+const uuid = require('uuid');
+const expressBasicAuth = require('express-basic-auth');
+
+//set variables
+//const url = `mongodb://${config.username}:${config.password}@${config.url}:${config.port}/${config.database}?authSource=admin`;
+//const client = new MongoClient(url, { useUnifiedTopology: true });
+const uri = "mongodb+srv://kds4:Mongo123@cluster0.oficb.mongodb.net/PRACTICAL-3?retryWrites=true&w=majority";
+client =  new MongoClient(uri, {useUnifiedTopology: true})
+let user_collection = null; //we will give this a value after we connect to the database
+let groups = null;
+let events = null;
+let games = null;
+let newsletter = null;
+let group_user = null;
+let game_user = null;
+let event_user = null;
+let admin = null;
 
 
-app.use(bp.json())
-app.use(bp.urlencoded({ extended: true }))
 
+const initializePassport = require('./configs/passport-config')
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+)
 
-async function main() {
-    const uri = "mongodb+srv://kds4:Mongo123@cluster0.oficb.mongodb.net/Sample?retryWrites=true&w=majority";
-    const uri2 = "mongodb+srv://kds4:Mongo123@cluster0.oficb.mongodb.net/List?retryWrites=true&w=majority";
+let users = []
 
-    client =  new MongoClient(uri, {useUnifiedTopology: true})
-    client2 = new MongoClient(uri2, {useUnifiedTopology: true})
+app.engine('.html', require('ejs').renderFile);
+app.set('view engine', 'ejs');
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) //optional but useful for url encoded data
+app.use(flash())
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(methodOverride('_method'))
 
-    try {
-
-        await client.connect();
-        await client2.connect();
-
-        groups = client.db("Sample").collection("sample_collection");
-        marriage = client.db("Sample").collection("marriage_records");
-        death = client.db("Sample").collection("death_records");
-        list_names = client.db("Sample").collection("list");
-        //list = client2.db("List").collection("BORRAR");
-        combined = client.db("Sample").collection("combined_collections");
-        absorbed = client.db("Sample").collection("absorbed");
-        activity = client.db("Sample").collection("activity");
- 
-        //await findOneListingByName(client, "Lovdely Loft");
-
-    } catch(e){
-
-        console.error(e);
-    } 
-
-    try {
-
-        app
-        .use(express.static(path.join(__dirname, 'public')))
-        .set('views', path.join(__dirname, 'views'))
-        .set('view engine', 'ejs')
-        .get('/', (req, res) => res.render('pages/index'))
-        .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-
-    } catch(e){
-
-        console.error(e);
-    } 
-
+var myMongoAuthoriser = async function(username, password, callback) {
+    return admin.findOne({_id: username, password: password })
+    .then(user => {
+        if ( user != null ) { console.log(username + " logged in"); return callback(null, true); }
+        else { console.log(username + " invalid credentials");  return callback(null, false); }
+    })
+    .catch(err => { console.log("error logging in", err ); return callback(null, false)})
 }
 
-main().catch(console.error);
+//register the valid username, password pairs with the express-basic-auth object
+var authorise = expressBasicAuth({
+    authorizer: myMongoAuthoriser,
+    authorizeAsync: true,
+	unauthorizedResponse: (req) => ((req.auth)? 'Credentials  rejected' : 'No credentials provided'),
+	challenge: true	//make the browser ask for credentials if none/wrong are provided
+})
 
+// Router for the homepage
+app.get('/', checkAuthenticated, (req, res) => {
+    res.render('client.html', { name: req.user.name, email: req.user.email })
+})
 
+// Router for the login page
+app.get('/login', checkNotAuthenticated, (req, res) => {
+    user_collection.find({}).toArray()
+        .then(docs => {
+            users = docs
+        })
+    res.render('login.html')
+})
 
+// Post inforamtion to the server and check authentication
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}))
 
-app.get('/database', function(req,res) {
-    combined.find({}).limit(limit).toArray()
+// Router for register page
+app.get('/register', checkNotAuthenticated, (req, res) => {
+    res.render('register.html', { error: "1" })
+})
+
+// Post information to the server and regist the user
+app.post('/register', checkNotAuthenticated, async (req, res) => {
+    try {
+        if (users.find(user => user.email === req.body.email)) {
+            console.log("Email already taken")
+            res.render('register.html', { error: "Email already taken" })
+            return
+        }
+        if (req.body.newsletter === "true") {
+            newsletter.insertOne({
+                email: req.body.email
+            })
+        }
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        user_collection.insertOne({
+            id: Date.now().toString(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        })
+        res.redirect('/login')
+    } catch {
+        console.log("error")
+        res.redirect('/register')
+    }
+})
+
+app.delete('/logout', (req, res) => {
+    req.logOut()
+    res.redirect('/')
+})
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.render('firstPage.html')
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
+
+//Redirect to create group page
+app.get('/derictGroup', (req, res) => {
+    res.render('createGroup.html');
+})
+
+//Redirect to profile
+app.get('/profile', (req, res) => {
+    res.render('profile.html');
+})
+
+//Redirect to profile
+app.get('/admin', authorise,function (req, res, next) {
+    res.render('admin.html');
+})
+
+//Get news from newsapi
+const NewsAPI = require('newsapi');
+const newsapi = new NewsAPI('568f5052d1dd43a2839a5fa0dffd7e0f');
+
+newsapi.v2.everything({
+    q: 'sport',
+    sources: 'bbc-news',
+    domains: 'bbc.co.uk',
+    language: 'en',
+    page: 1
+}).then(response => {
+    app.get('/news', function (req, res) {
+        console.log("Send news");
+        res.send(response);
+    })
+});
+
+//api from lastest Event information on home page
+app.get('/newEvent', function (req, res) {
+    console.log("Print new event");
+    res.send(testingData.tempEvent);
+})
+
+//api from lastest Game information on home page
+app.get('/newGame', function (req, res) {
+    console.log("Print new game");
+    res.send(testingData.tempGame);
+})
+
+// api for the creation page (group)
+app.get('/groups/create', function (req, res) {
+    console.log("Create a group you want")
+    res.render('createGroup.html');
+})
+
+// api for creating the page
+app.post('/groups/create',function(req,res){
+    console.log(req.body);
+    let name = req.body.name;
+    let tags = req.body.tags;
+    let description = req.body.description;
+    groups.findOne({ name: name }, { projection: { _id: 1, name: "$name", description: 1, tags: 1 } })
+        .then(group => {//Check if the game has already existed in the database
+            if (group != null) res.status(404).send("Group name already exists.");
+            else {
+                groupId = uuid.v1();
+                groups.insertOne({ _id: groupId, name: name, description: description, tags: tags })
+                    .then(gop => {
+                        console.log("Successfully insert with ID", gop.insertedId);
+                        res.status(200).send(`Create group${name}`);
+                    })
+            }
+        })
+        .catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${name}. Group already exists.`);
+            }
+            else {
+                console.log(`Cannot add ${name}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${name}. Unknown Error.`);
+            }
+        })
+})
+
+// api for find all groups information
+app.get('/groups/all', function (req, res, next) {
+    groups.find({}).toArray()
         .then(group => {
             res.status(200).json(group);
         })
         .catch(err => {
             res.status(400).send("Could not get group information", err.message);
         })
-});
+})
 
-app.get('/get/activity', async function(req,res) {
-  const activity_array = await activity.findOne({id: "activity"})
+// api for find all the users information with respect to group
+app.get('/groups/:groupname/users', function (req, res, next) {
+    let groupname = req.params.groupname;
+    group_user.find({ group: groupname }).toArray()
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
 
-  res.status(200).json(activity_array.activity);
+// api to find a user in groups -k
+app.get('/groups/find/:userID', function (req, res, next) {
+    let userID = req.params.userID;
+    group_user.find({ userID: userID }).toArray()
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+// api for displaying group info and their members -k
+app.get('/groups/:groupname', function (req, res, next) {
+    let groupname = req.params.groupname;
+    groups.findOne({ name: groupname })
+        .then(group => {
+
+            console.log(group)
+            res.render('viewGroup.html', { group: group.name })
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+// api for getting group description -k
+app.get('/groups/description/:groupname', function (req, res, next) {
+    let groupname = req.params.groupname;
+    groups.findOne({ name: groupname })
+        .then(group => {
+            res.status(200).json(group)
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+// api for getting group tags -k
+app.get('/groups/tags/:groupname', function (req, res, next) {
+    let groupname = req.params.groupname;
+    groups.findOne({ name: groupname })
+        .then(group => {
+            res.status(200).json(group)
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
 
 
-});
+// api for sign to a group:Require the email that the user used to register
+app.post('/groups/:groupname/users/:userID', function (req, res) {
+    let groupname = req.params.groupname;
+    let userID = req.params.userID;
+    console.log({ groupname: groupname, userID: userID })
+    group_user.findOne({ userID: userID, group: groupname })
+        .then(guser => {// Check if the user has already signed to this group
+            if (guser != null) res.status(404).send("You have signed to this group");
+            else {
+                recordID = uuid.v1();
+                console.log(recordID);
+                group_user.insertOne({ _id: recordID, userID: userID, group: groupname })
+                    .then(uop => {
+                        console.log("Successfully insert with ID", uop.insertedId);
+                        console.log(`User ${userID} has successfully join to group ${groupname}`);
+                        res.status(200).send(`Successfully join to group ${groupname}`)
 
-app.get('/getNotes/:person', async function(req,res) {
-
-    let id = req.params.person
-
-    const person = await combined.findOne({ID: id})
-
-    let notes = person["notes"]
-
-    console.log(person)
-    console.log(notes)
-
-    
-    res.status(200).send(notes);
-
-
-
-});
-
-app.get('/getPerson/:person', async function(req,res) {
-    let id = req.params.person
-
-    const person = await combined.findOne({ID: id})
-
-    res.status(200).send(person);
-});
-
-
-
-app.get('/database/:value/:forname/:surname/:sex/:dataset/:father_forename/:father_surname/:mother_forename/:mother_surname/:address/:occupation/:f_occupation/:m_occupation/:death/:marriage/:p_marriage', async function(req,res) {
-    let value = parseInt(req.params.value);
-    let forname = req.params.forname;
-    let surname = req.params.surname;
-    let sex = req.params.sex;
-    let dataset = req.params.dataset;
-    let father_forname = req.params.father_forename;
-    let father_surname = req.params.father_surname;
-    let mother_forname = req.params.mother_forename;
-    let mother_surname = req.params.mother_surname;
-    let address = req.params.address;
-    let occupation = req.params.occupation;
-    let f_occupation = req.params.f_occupation;
-    let m_occupation = req.params.m_occupation;
-    let s_occupation = req.params.s_occupation;
-    let death = req.params.death;
-    let marriage = req.params.marriage;
-    let p_marriage = req.params.p_marriage;
-    
-    let queary = {}
-    let extra_people = []
-    let all_people
-    let global_people = []
-    let response = []
-    let main = []
-
-    
-
-    if(forname !== "false"){
-        queary["Forname"] = { $regex : new RegExp(forname, "i") }
-    } if(surname !== "false"){
-        queary["Surname"] = { $regex : new RegExp(surname, "i") }
-    } if(sex !== "false"){
-        queary["sex"] = sex
-    } if(dataset !== "false"){
-        queary["dataset"] = dataset
-    } if(father_forname !== "false"){
-        queary["father_forname"] = { $regex : new RegExp(father_forname, "i") }
-    } if(father_surname !== "false"){
-        queary["father_surname"] = { $regex : new RegExp(father_surname, "i") }
-    } if(mother_forname !== "false"){
-        queary["mother_forname"] = { $regex : new RegExp(mother_forname, "i") }
-    } if(mother_surname !== "false"){
-        queary["mother_surname"] = { $regex : new RegExp(mother_surname, "i") }
-    } if(address !== "false"){
-        queary["address"] = { $regex : new RegExp(address, "i") }
-    } if(occupation !== "false"){
-        queary["occupation"] = { $regex : new RegExp(occupation, "i") }
-    } if(f_occupation !== "false"){
-        queary["father_occupation"] = { $regex : new RegExp(f_occupation, "i") }
-    } if(m_occupation !== "false"){
-        queary["mother_occupation"] = { $regex : new RegExp(m_occupation, "i") }
-    } if(death !== "false"){
-        queary["date of death"] = { $regex : new RegExp(death, "i") }
-    } if(marriage !== "false"){
-        queary["place_marriage"] = { $regex : new RegExp(marriage, "i") }
-    } if(p_marriage !== "false"){
-        queary["place_parents_marriage"] = { $regex : new RegExp(p_marriage, "i") }
-    }
-
-    console.log(queary)
-
-    const count = await combined.find(queary).count()
-    const group = await combined.find(queary).limit(value).toArray()
-
-    
-            all_people = group
-
-            for(let x of all_people){
-                global_people.push(x["ID"])
-                main.push(x["ID"])
+                    })
             }
-
-            //Returns children of people
-            for(let person of all_people){
-                if(person.children.length > 0){
-                    for(let child of person.children){
-                        if(global_people.includes(child)){
-                        }  else{
-                            extra_people.push(child)
-                            global_people.push(child)
-                        }                  
-                    }
-                }
+        }).catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${groupname}. Record already exists.`);
             }
-             //Returns father of people
-            for(let person of all_people){
-                if(person.father.length > 0){
-                    for(let parent of person.father){
-                        if(global_people.includes(parent)){
-                        }else{
-                            extra_people.push(parent)
-                            global_people.push(parent)
-                        }
-                    }
-                }
+            else {
+                console.log(`Cannot add ${groupname}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${groupname}. Unknown Error.`);
             }
-
-        
-                //Returns mother of people
-                for(let person of all_people){
-                if(person.mother.length > 0){
-                    for(let parent of person.mother){
-                        if(global_people.includes(parent)){
-                        }else{
-                            extra_people.push(parent)
-                            global_people.push(parent)
-                        }
-                    }
-                }
-            }
-
-        
-            //Returns spouse of people
-            for(let person of all_people){
-                if(person.spouse.length > 0){
-                    for(let spouse of person.spouse){
-                        if(global_people.includes(spouse)){
-                        }else{
-                            extra_people.push(spouse)
-                            global_people.push(spouse)
-                        }
-                    }
-                }
-            }
-
-            for(let person of extra_people){
-
-                all_people.push(await gatherMorePeople(person))
-            }
+        })
+})
 
 
-
-
-
-            for(let i = 0; i < all_people.length; i++){
-              if(all_people[i] == undefined){
-                all_people.splice(i,1)
-              }
-            }
-
-            if(all_people.includes(undefined)){
-              console.log("yess")
-            }
-
-            
-            response[0] = all_people
-            response[1] = count
-            response[2] = main
-                res.status(200).json(response)
-
-
-});
-
-async function gatherMorePeople(id){
-    const person = await combined.findOne({ID: id})
-    return person
-
-
-}
-
-app.post('/list/family/:candidate/:collection', async function (req, res) {
-    let candidate = req.params.candidate; 
-    let collection = req.params.collection
-
-    const person = await client2.db("List").collection(collection).findOne({person_id: candidate})
-    console.log(person)
-
-
-    if(person == undefined){
-      client2.db("List").collection(collection).insertOne({person_id: candidate})
-      .then(comment => {
-          console.log("Successfully insert with ID", comment.insertedId);
-          res.status(200).send(`Person has been added to this list`);
-      })
-    } else{
-      res.status(200).send(`Person is already in the list`);
-    }
-
-
+// api for sign to a group:Require the email that the user used to register
+app.post('/groups/delete/:groupname/users/:userID', function (req, res) {
+    let groupname = req.params.groupname;
+    let userID = req.params.userID;
+    group_user.deleteOne({userID: userID, group: groupname})
+    .then(res => console.log("deleted user", res.deletedCount))
+    .catch(err => {
+            console.log("Could not delete one ", err.message);
+        })
 })
 
 
 
-app.get('/lists/all', function(req,res) {
-    list_names.find({}).toArray()
-        .then(data => {
-            res.status(200).json(data);
+
+
+// api for the creation page (events)
+app.get('/events/create', function (req, res) {
+    console.log("Create an event you want")
+    res.render('createEvent.html');
+})
+
+// api for creating the events
+app.post('/events/create', function (req, res) {
+    let name = req.body.name;
+    let time = req.body.time;
+    let location = req.body.location;
+    events.findOne({ name: name }, { projection: { _id: 1, name: "$name", location: 1, time: 1 } })
+        .then(event => {// Check if the event has already existed in the database
+            if (event != null) res.status(404).send("Event name already exists.");
+            else {
+                eventId = uuid.v1();
+                events.insertOne({ _id: eventId, name: name, location: location, time: time })
+                    .then(gop => {
+                        console.log("Successfully insert with ID", gop.insertedId);
+                        res.status(200).send(`Create game${name}`);
+                    })
+            }
         })
-        .catch(err => {res.status(200).json(data)
-            res.status(400).send("Could not get information", err.message);
+        .catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${name}. Group already exists.`);
+            }
+            else {
+                console.log(`Cannot add ${name}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${name}. Unknown Error.`);
+            }
         })
-});
+})
 
-
-app.get('/absorbed/:absorbed_id', function(req,res) {
-
-    let id = req.params.absorbed_id;
-    
-    absorbed.findOne({ID: id})
-        .then(data => {
-            res.status(200).json(data);
+// api for find all events information
+app.get('/events/all', function (req, res, next) {
+    events.find({}).toArray()
+        .then(event => {
+            res.status(200).json(event);
         })
+        .catch(err => {
+            res.status(400).send("Could not get game information", err.message);
+        })
+})
 
-});
+// api for sign to a event:Require the email that the user used to register
+app.post('/events/:eventsname/users/:userID', function (req, res) {
+    let eventname = req.params.eventsname;
+    let userID = req.params.userID;
+    console.log({ eventname: eventname, userID: userID })
+    event_user.findOne({ userID: userID, event: eventname })
+        .then(euser => {// Check if the user has already joined this event
+            if (euser != null) res.status(404).send("You have signed to this event");
+            else {
+                recordID = uuid.v1();
+                console.log(recordID);
+                event_user.insertOne({ _id: recordID, userID: userID, event: eventname })
+                    .then(uop => {
+                        console.log("Successfully insert with ID", uop.insertedId);
+                        console.log(`User ${userID} has successfully join to event ${eventname}`);
+                        res.status(200).send(`Successfully join the event: ${eventname}`)
 
-app.get('/get/list/:list', async function(req,res) {
-    
-    let list = req.params.list;
-    let people = []
+                    })
+            }
+        }).catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${eventname}. Record already exists.`);
+            }
+            else {
+                console.log(`Cannot add ${eventname}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${eventname}. Unknown Error.`);
+            }
+        })
+})
 
-    const data = await client2.db("List").collection(`${list}`).find({}).toArray()
-
-
-    for(person of data){
-            people.push(await getPerson(person.person_id))                    
-    }
-
-
-    res.status(200).json(people);
+// api for find all the users information with respect to events
+app.get('/events/:eventname/users', function (req, res, next) {
+    let eventname = req.params.eventname;
+    event_user.find({ eventgame: eventname }).toArray()
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
 })
 
 
-app.get('/get/rel/:id/:rel', async function(req,res) {
-    let id = req.params.id;
-    let rel = req.params.rel;
-    let people = []
-
-    const person = await combined.findOne({ID: id})
-
-    for(relative of person[`${rel}`]){
-            people.push(await getPerson(relative))                    
-    }
-
-
-    res.status(200).json(people);
-})
-      
-
-async function getPerson(id){
-    const result = await combined.find({ID: id}).toArray()
-    return result[0]
-}
-
-app.get('/collections',  function(req,res) {
-    client2.db("List").listCollections({}, {nameOnly: true}).toArray(function(err, collection) {
-        res.status(200).json(collection)});
+// api to find a user in events -k
+app.get('/events/find/:userID', function (req, res, next) {
+    let userID = req.params.userID;
+    event_user.find({ userID: userID }).toArray()
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
 })
 
-app.post('/list/:list', async function (req, res) {
-    let newList = req.params.list;
-    let exist = "yes"
 
-    
-    client2.db("List").createCollection(`${newList}`)
-        .then(() => {
-            let collection = client2.db("List").collection(newList); //initialise our global variable so it can be used later
-            console.log("Collection created!");
-            list_names.insertOne({ name: newList})
-            res.status(200).send(`${newList} list has been created`);
-        })
-        .catch(err => { 
-            console.log("Could not create collection ", err.message); 
-            res.status(200).send("already exists")
-            //we will can check the reason the creation failed - 48 means collection already exists
-            //in this case, we are choosing to re-throw the error if the collection does *not* already exist 
-            if ( err.name != 'MongoError' || err.code!== 48) throw err
-        })
+// api for the creation page (games)
+app.get('/games/create', function (req, res) {
+    console.log("Create a game you want")
+    res.render('createGame.html');
+})
 
-        if(exist == "no"){
-            list_names.insertOne({ name: newList})
-                    .then(comment => {
+// api for create the game
+app.post('/games/create', function (req, res) {
+    let name = req.body.name;
+    let time = req.body.time;
+    let location = req.body.location;
+    games.findOne({ name: name }, { projection: { _id: 1, name: "$name", location: 1, time: 1 } })
+        .then(game => {// Check if the game has already existed in the database
+            if (game != null) res.status(404).send("Game name already exists.");
+            else {
+                gameId = uuid.v1();
+                games.insertOne({ _id: gameId, name: name, location: location, time: time })
+                    .then(gop => {
+                        console.log("Successfully insert with ID", gop.insertedId);
+                        res.status(200).send(`Create game${name}`);
+                    })
+            }
+        })
+        .catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${name}. Game already exists.`);
+            }
+            else {
+                console.log(`Cannot add ${name}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${name}. Unknown Error.`);
+            }
+        })
+})
+
+// api for find all games information
+app.get('/games/all', function (req, res, next) {
+    games.find({}).toArray()
+        .then(group => {
+            res.status(200).json(group);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get group information", err.message);
+        })
+})
+
+// api for sign to a game:Require the email that the user used to register
+app.post('/games/:gamename/users/:userID', function (req, res) {
+    let gamename = req.params.gamename;
+    let userID = req.params.userID;
+    console.log({ gamename: gamename, userID: userID })
+    game_user.findOne({ userID: userID, game: gamename })
+        .then(guser => {// Check if the user has already join to this game
+            if (guser != null) res.status(404).send("You have signed to this game");
+            else {
+                recordID = uuid.v1();
+                console.log(recordID);
+                game_user.insertOne({ _id: recordID, userID: userID, game: gamename })
+                    .then(uop => {
+                        console.log("Successfully insert with ID", uop.insertedId);
+                        console.log(`User ${userID} has successfully join to game ${gamename}`);
+                        res.status(200).send(`Successfully join the game ${gamename}`)
+
+                    })
+            }
+        }).catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${gamename}. Record already exists.`);
+            }
+            else {
+                console.log(`Cannot add ${gamename}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${gamename}. Unknown Error.`);
+            }
+        })
+})
+
+
+// api for find all the users information with respect to games
+app.get('/games/:gamename/users', function (req, res, next) {
+    let gamename = req.params.gamename;
+    game_user.find({ gamename: gamename }).toArray()
+        .then(users => {
+            res.status(200).json(users);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+// api to find a user in games -k
+app.get('/games/find/:userID', function (req, res, next) {
+    let userID = req.params.userID;
+    game_user.find({ userID: userID }).toArray()
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+
+
+// get all user records -k
+app.get('/users/all', function (req, res) {
+    user_collection.find({}).toArray()
+        .then(records => {
+            res.status(200).json(records);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+
+// api for getting user info -k
+app.get('/users/:userID', function (req, res) {
+    let userID = req.params.userID;
+    user_collection.findOne({ email: userID, })
+        .then(user => {
+            res.json({ name: user.name })
+
+        })
+        .catch(err => {
+            console.log("Could not find ", userID, err.message);
+        })
+})
+
+// api for getting users info: which groups/games/events have joined
+app.get('/users/:userID/groups', function (req, res) {
+    let userID = req.params.userID;
+    group_user.find({ userID: userID }).toArray()
+        .then(records => {
+            console.log(records);
+            res.json(records);
+        })
+        .catch(err => {
+            console.log("Could not find ", userID, err.message);
+        })
+})
+
+// api for getting users info: which groups/games/events have joined
+app.get('/users/:userID/games', function (req, res) {
+    let userID = req.params.userID;
+    game_user.find({ userID: userID }).toArray()
+        .then(records => {
+            console.log(records);
+            res.json(records);
+        })
+        .catch(err => {
+            console.log("Could not find ", userID, err.message);
+        })
+})
+
+// api for getting users info: which groups/games/events have joined
+app.get('/users/:userID/events', function (req, res) {
+    let userID = req.params.userID;
+    event_user.find({ userID: userID }).toArray()
+        .then(records => {
+            console.log(records);
+            res.json(records);
+        })
+        .catch(err => {
+            console.log("Could not find ", userID, err.message);
+        })
+})
+
+
+// api for users to post comments
+app.post('/comments/users/:username/groups/:groupname', function (req, res) {
+    let groupname = req.params.groupname;
+    let username = req.params.username;
+    let postTime = req.body.time;
+    let message = req.body.message;
+    comments.insertOne({ username: username, message: message, group: groupname, time: postTime })
+        .then(comment => {
             console.log("Successfully insert with ID", comment.insertedId);
+            res.status(200).send("Post Comments");
         })
-        }
-    })
-
-
-
-
-    app.post('/addRel/:d/:person/:rel', async function (req, res) {
-        let reciever = req.params.d; 
-        let new_rel = req.params.person
-        let relationship = req.params.rel
-        let relationship2
-        let manually_created_rel1 = []
-        let manually_created_rel2 = []
-
-
-        const person1 = await combined.findOne({ID: reciever})
-        const person2 = await combined.findOne({ID: new_rel})
-
-        if(relationship == "children"){
-            if(person2.sex == "M"){
-                relationship2 = "father"
-            } else if(person2.sex == "F"){
-                relationship2 = "mother"
-            }   
-            
-        } else if(relationship == "father"){
-            relationship2 = "children"
-        } else if(relationship == "mother"){
-            relationship2 = "children"
-        } else if(relationship == "spouse"){
-            relationship2 = "spouse"
-        }
-
-
-        
-        if(person1[`${relationship}`].includes(new_rel) || person2[`${relationship2}`].includes(reciever)){
-            res.status(200).send(`Relationship already exists`);
-        }else{
-            person1[`${relationship}`].push(new_rel)
-            person2[`${relationship2}`].push(reciever)
-
-            person1["new_rel"].push(new_rel)
-            person2["new_rel"].push(reciever)
-
-    
-            if(relationship == "children" && relationship2 == "father"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { children : person1["children"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { father : person2['father'] }},
-                    {upsert: true}
-                )
-            }  else if(relationship == "children" && relationship2 == "mother"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { children : person1["children"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { mother : person2['mother'] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "father"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { father : person1['father'] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { children : person2["children"] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "mother"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { mother : person1['mother'] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { children : person2["children"] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "spouse"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { spouse : person1["spouse"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { spouse : person2["spouse"] }},
-                    {upsert: true}
-                )
+        .catch(err => {
+            console.log("Could not add data ", err.message);
+            //For now, ingore duplicate entry errors, otherwise re-throw the error for the next catch
+            if (err.name == 'MongoError' || err.code == 11000) {
+                res.status(400).send(`Cannot add ${username}.`);
             }
-
-
-            await combined.findOneAndUpdate(
-                { ID: reciever},
-                {$set: { new_rel : person1["new_rel"] }},
-                {upsert: true}
-            )
-            await combined.findOneAndUpdate(
-                { ID: new_rel},
-                {$set: { new_rel : person2["new_rel"] }},
-                {upsert: true}
-            )
-
-        }
-
-
-        
-
-
-        
-
-
-       res.status(200).send(`Relationship has been created`);
-
-        
-    })
-
-
-    app.post('/removeRel/:d/:person/:rel', async function (req, res) {
-        let reciever = req.params.d; 
-        let new_rel = req.params.person
-        let relationship = req.params.rel
-        let relationship2
-
-        const person1 = await combined.findOne({ID: reciever})
-        const person2 = await combined.findOne({ID: new_rel})
-
-
-
-        if(relationship == "children"){
-            if(person2.sex == "M"){
-                relationship2 = "father"
-            } else if(person2.sex == "F"){
-                relationship2 = "mother"
-            }   
-            
-        } else if(relationship == "father"){
-            relationship2 = "children"
-        } else if(relationship == "mother"){
-            relationship2 = "children"
-        } else if(relationship == "spouse"){
-            relationship2 = "spouse"
-        }
-
-
-        
-
-
-        if(person1[`${relationship}`].includes(new_rel) && person2[`${relationship2}`].includes(reciever)){
-
-            const index1 = person1[`${relationship}`].indexOf(new_rel)
-            if (index1 > -1) {
-                person1[`${relationship}`].splice(index1, 1);
+            else {
+                console.log(`Cannot add ${username}. Unknown Error.`);
+                res.status(400).send(`Cannot add ${username}. Unknown Error.`);
             }
-
-            const index2 = person2[`${relationship2}`].indexOf(reciever)
-            if (index2 > -1) {
-                person2[`${relationship2}`].splice(index2, 1);
-            }
-
-
-            if(relationship == "children" && relationship2 == "father"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { children : person1["children"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { father : person2['father'] }},
-                    {upsert: true}
-                )
-            }  else if(relationship == "children" && relationship2 == "mother"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { children : person1["children"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { mother : person2['mother'] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "father"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { father : person1['father'] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { children : person2["children"] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "mother"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { mother : person1['mother'] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { children : person2["children"] }},
-                    {upsert: true}
-                )
-            } else if(relationship == "spouse"){
-                await combined.findOneAndUpdate(
-                    { ID: reciever},
-                    {$set: { spouse : person1["spouse"] }},
-                    {upsert: true}
-                )
-                await combined.findOneAndUpdate(
-                    { ID: new_rel},
-                    {$set: { spouse : person2["spouse"] }},
-                    {upsert: true}
-                )
-            }
-
-            
-            res.status(200).send(`Relationship has been removed`);
-
-
-        }
-
-
-        
-    })
-
-
-    app.post('/merge/:d/:person/:collection', async function (req, res) {
-        let merged_personID = req.params.d; 
-        let erasedID = req.params.person
-        let collection = req.params.collection
-        let update = []
-
-
-        let person1 = await combined.findOne({ID: merged_personID})
-        let person2 = await combined.findOne({ID: erasedID})
-
-
-
-        if(person2.mother.length > 0){
-            for(let mother of person2.mother){
-                if(person1.mother.includes(mother)){
-                }else{
-                    person1.mother.push(mother)
-                    update.push(mother)
-                }
-            }
-        } if(person2.father.length > 0){
-            for(let father of person2.father){
-                if(person1.father.includes(father)){
-                }else{
-                    person1.father.push(father)
-                    update.push(father)
-                }
-            }
-        } if(person2.children.length > 0){
-            for(let child of person2.children){
-                if(person1.children.includes(child)){
-                }else{
-                    person1.children.push(child)
-                    update.push(child)
-                }
-            }
-        } if(person2.spouse.length > 0){
-            for(let spouse of person2.spouse){
-                if(person1.spouse.includes(spouse)){
-                }else{
-                    person1.spouse.push(spouse)
-                    update.push(spouse)
-                }
-            }
-        }
-
-        person2["absorbedBy"] = merged_personID
-        person1["people_absorbed"].push(erasedID)
-
-
-        for(let relationship_id of update){
-            let person = await combined.findOne({ID: relationship_id})
-            
-
-
-            if(person.mother.length > 0){
-                if(person["mother"].findIndex(x => x === erasedID) !== -1){
-                    let index = person.mother.findIndex(x => x === erasedID)
-                    person.mother[index] = merged_personID
-                }
-            } if(person.father.length > 0){
-                if(person["father"].findIndex(x => x === erasedID) !== -1){
-                    let index = person.father.findIndex(x => x === erasedID)
-                    person.father[index] = merged_personID
-                }
-            } if(person.children.length > 0){
-                if(person["children"].findIndex(x => x === erasedID) !== -1){
-                    let index = person.children.findIndex(x => x === erasedID)
-                    person.children[index] = merged_personID
-                }
-            } if(person.spouse.length > 0){
-                if(person["spouse"].findIndex(x => x === erasedID) !== -1){
-                    let index = person.spouse.findIndex(x => x === erasedID)
-                    person.mother[index] = merged_personID
-                }
-            }
-
-            
-
-            await combined.findOneAndUpdate(
-                { ID: person.ID},
-                {$set: 
-                    { mother: person.mother,
-                     father: person.father,
-                     children: person.children,
-                     spouse: person.spouse}
-                },
-                {upsert: true}
-            )
-        }
-
-        await combined.findOneAndUpdate(
-            { ID: merged_personID},
-            {$set: {  mother: person1.mother,
-                     father: person1.father,
-                     children: person1.children,
-                     spouse: person1.spouse,
-                     people_absorbed: person1["people_absorbed"]}},
-            {upsert: true}
-        )
-    
-
-
-        absorbed.insertOne(person2)
-
-        await combined.deleteOne( { ID: erasedID } )
-        await client2.db("List").collection(collection).deleteOne( { person_id: erasedID } )
-
-
-        res.status(200).send(`They have been merged`);
-
-
-        
-
-
-        
-    })
-
-
-
-    app.post('/remove/:list/:person', function (req, res) {
-        let person = req.params.person;
-        let list = req.params.list;    
-        
-        
-       client2.db("List").collection(list).deleteOne({ person_id: person })
-            .then(() => {
-                console.log("person deleted");
-                res.status(200).send(`Person was removed`);
-            })
-            .catch(err => { 
-                console.log("Could not delete person ", err.message); 
-                //we will can check the reason the creation failed - 48 means collection already exists
-                //in this case, we are choosing to re-throw the error if the collection does *not* already exist 
-                if ( err.name != 'MongoError' || err.code!== 48) throw err; 
-            })
         })
+})
 
-
-        app.post('/removeList/:list', async function (req, res) {
-          let list = req.params.list;    
-          
-
-        await list_names.deleteOne( { name: list } )
-
-        await client2.db("List").collection(list).drop()
-          
-        res.status(200).send(`List deleted`);
-          
-          
+// api for fetch comments information
+app.get('/comments/groups/:groupname', function (req, res, next) {
+    let groupname = req.params.groupname;
+    comments.find({ group: groupname }).toArray()
+        .then(comment => {
+            console.log(comment);
+            res.json(comment);
         })
-
-        app.post('/activity', async function (req, res) {
-          let phrase= req.body;    
-
-          
-         //await activity.insertOne({id: "activity", activity: []})
-
-         let activity_array = await activity.findOne({id: "activity"})
-         activity_array.activity.push(phrase.phrase)
-
-          await activity.findOneAndUpdate(
-            { id: "activity"},
-            {$set: {  activity: activity_array.activity}},
-            {upsert: true}
-        )
-        res.status(200).send(`Note added`);
-          
+        .catch(err => {
+            res.status(400).send("Could not get group information", err.message);
         })
+})
 
-        app.post('/addNote/:person', async function (req, res) {
-            let id = req.params.person;
-            let note = req.body   
-            
-            const person = await combined.findOne({ID: id})
+// api for displaying the individual profile -k
+app.get('/profile/:userID', function (req, res, next) {
+    let userID = req.params.userID;
+    user_collection.findOne({ email: userID })
+        .then(user => {
+            res.render('viewProfile.html', { email: user.email, name: user.name })
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
 
-            person["notes"].push(note.value)
+//api for displaying the admin summary
+app.get('/admin/:userId/summary', authorise,function (req, res, next) {
 
-            
-            await combined.findOneAndUpdate(
-                { ID: id},
-                {$set: {  notes: person["notes"]}},
-                {upsert: true}
-            )
-
-            res.status(200).send(`Note added`);
-
-            })
-
-            app.post('/updateInfo/:cell/:info/:person', async function (req, res) {
-                let id = req.params.person;
-                let cell = req.params.cell;
-                let info = req.params.info;
-                let queary
-
-                if(cell == "forname_1"){
-                    queary = "Forname"
-                } else if(cell == "surname_1"){
-                    queary = "Surname"
-                } else if(cell == "birthday_1"){
-                    queary = "birthday"
-                } else if(cell == "birthday_1"){
-                    queary = "sex_1"
-                } else if(cell == "sex"){
-                    queary = "birthday"
-                } else if(cell == "occupation_1"){
-                    queary = "occupation"
-                } else if(cell == "address_1"){
-                    queary = "address"
-                } else if(cell == "fatherOcc_1"){
-                    queary = "father_occupation"
-                } else if(cell == "motherOcc_1"){
-                    queary = "mother_occupation"
-                } else if(cell == "marriage_1"){
-                    queary = "place_marriage"
-                } else if(cell == "p_marriage_1"){
-                    queary = "place_parents_marriage"
-                } else if(cell == "death_1"){
-                    queary = "date of death"
-                }
-                
-                if(info == "nothing"){
-                    info = ""
-                }
-
-
-                console.log(info)
-                console.log(cell)
-                console.log(queary)
-
-                const person = await combined.findOne({ID: id})
-    
-
-    
-                
-                await combined.findOneAndUpdate(
-                    { ID: id},
-                    {$set: {  [`${queary}`] : info}},
-                    {upsert: true}
-                )
-    
-
-                res.status(200).send(`Note added`);
-    
-                })
+    res.status(200).render('admin.html');
+    res.end();
+})
 
 
 
 
+// api test to see collections data -k
+app.get('/content', function (req, res, next) {
+    group_user.find({}).toArray()
+        .then(users => {
+            console.log(users)
+            res.status(200).json(users);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
 
+// api test to get username based on email -k
+app.get('/username/:userID', function (req, res, next) {
+    let userID = req.params.userID;
+    user_collection.findOne({email: userID})
+        .then(user => {
+            res.status(200).json(user);
+        })
+        .catch(err => {
+            res.status(400).send("Could not get user information", err.message);
+        })
+})
+
+client.connect()
+    .then(conn => {
+        // connect to the database
+        user_collection = client.db("PRACTICAL-3").collection("users");
+        groups = client.db("PRACTICAL-3").collection("groups");
+        events = client.db("PRACTICAL-3").collection("events");
+        games = client.db("PRACTICAL-3").collection("games");
+        newsletter = client.db("PRACTICAL-3").collection("newsletter");
+        game_user = client.db("PRACTICAL-3").collection("game_user");
+        event_user = client.db("PRACTICAL-3").collection("event_user");
+        group_user = client.db("PRACTICAL-3").collection("group_user");
+        comments = client.db("PRACTICAL-3").collection("comments");
+        admin = client.db("PRACTICAL-3").collection("admin");
+        console.log("Connected!", conn.s.url.replace(/:([^:@]{1,})@/, ':****@'))
+    })
+    .catch(err => { console.log(`Could not connect to ${url.replace(/:([^:@]{1,})@/, ':****@')}`, err); throw err; })
+    // tell the server to listen on the given port and log a message to the console
+    .then(() => app.listen(API_PORT, host, () => console.log(`Listening on localhost: ${API_PORT}`)))
+    .catch(err => console.log(`Could not start server`, err))
 
