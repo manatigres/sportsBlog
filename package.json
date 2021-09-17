@@ -253,7 +253,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.heroku.com/prueba-community-blog.git"
+    "url": "https://git.heroku.com/gin-rummy-game.git"
+
   },
   "author": "",
   "license": "ISC"
